@@ -8,11 +8,19 @@ class ProjectRepository {
 
   //stream projects
 
-  Stream<List<Project>> listenProjects() {
+  Stream<List<Project>> listenActiveProjects() {
     return isar
         .collection<ProjectDto>()
         .filter()
         .archivedEqualTo(false)
+        .watch(fireImmediately: true)
+        .map((event) => event.map((e) => e.toDomainModel()).toList());
+  }
+
+  Stream<List<Project>> listenAllProjects() {
+    return isar
+        .collection<ProjectDto>()
+        .buildQuery<ProjectDto>()
         .watch(fireImmediately: true)
         .map((event) => event.map((e) => e.toDomainModel()).toList());
   }

@@ -12,7 +12,7 @@ class BoardCubit extends Cubit<BoardState> {
   BoardCubit(this.projectRepository) : super(const BoardState(projects: []));
   final ProjectRepository projectRepository;
   void listenProjects() {
-    projectRepository.listenProjects().listen((event) {
+    projectRepository.listenAllProjects().listen((event) {
       emit(
         state.copyWith(
           projects: event,

@@ -11,7 +11,7 @@ class SelectProjectCubit extends Cubit<SelectProjectState> {
       : super(const SelectProjectState(projects: []));
   final ProjectRepository projectRepository;
   void listenProjects() {
-    projectRepository.listenProjects().listen((event) {
+    projectRepository.listenActiveProjects().listen((event) {
       emit(
         state.copyWith(
           projects: event,
