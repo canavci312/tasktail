@@ -8,9 +8,9 @@ part 'project_dto.g.dart';
 @collection
 class ProjectDto {
   ProjectDto({
-    this.id,
     required this.title,
     required this.createdOn,
+    this.id,
     this.color = TagColor.noColor,
     this.updatedOn,
     this.archived = false,
@@ -51,4 +51,5 @@ class ProjectDto {
       updatedOn: updatedOn,
     );
   }
+  
 }

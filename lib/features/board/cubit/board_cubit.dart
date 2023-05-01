@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:task_app/data/repositories/project_repository.dart';
 import 'package:task_app/domain/repositories/models/project.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
-import 'package:task_app/extensions/list_extensions.dart';
+import 'package:task_app/utils/extensions/list_extensions.dart';
 
 part 'board_state.dart';
 part 'board_cubit.freezed.dart';

@@ -16,8 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Project {
-  int? get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
   List<Task>? get tasks => throw _privateConstructorUsedError;
   SortBy get sortyBy => throw _privateConstructorUsedError;
   TagColor get color => throw _privateConstructorUsedError;
@@ -35,8 +35,8 @@ abstract class $ProjectCopyWith<$Res> {
       _$ProjectCopyWithImpl<$Res, Project>;
   @useResult
   $Res call(
-      {int? id,
-      String title,
+      {String title,
+      int? id,
       List<Task>? tasks,
       SortBy sortyBy,
       TagColor color,
@@ -58,8 +58,8 @@ class _$ProjectCopyWithImpl<$Res, $Val extends Project>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
     Object? title = null,
+    Object? id = freezed,
     Object? tasks = freezed,
     Object? sortyBy = null,
     Object? color = null,
@@ -68,14 +68,14 @@ class _$ProjectCopyWithImpl<$Res, $Val extends Project>
     Object? updatedOn = freezed,
   }) {
     return _then(_value.copyWith(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int?,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
       tasks: freezed == tasks
           ? _value.tasks
           : tasks // ignore: cast_nullable_to_non_nullable
@@ -112,8 +112,8 @@ abstract class _$$_ProjectCopyWith<$Res> implements $ProjectCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {int? id,
-      String title,
+      {String title,
+      int? id,
       List<Task>? tasks,
       SortBy sortyBy,
       TagColor color,
@@ -132,8 +132,8 @@ class __$$_ProjectCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
     Object? title = null,
+    Object? id = freezed,
     Object? tasks = freezed,
     Object? sortyBy = null,
     Object? color = null,
@@ -142,14 +142,14 @@ class __$$_ProjectCopyWithImpl<$Res>
     Object? updatedOn = freezed,
   }) {
     return _then(_$_Project(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int?,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
       tasks: freezed == tasks
           ? _value._tasks
           : tasks // ignore: cast_nullable_to_non_nullable
@@ -182,8 +182,8 @@ class __$$_ProjectCopyWithImpl<$Res>
 
 class _$_Project implements _Project {
   const _$_Project(
-      {this.id,
-      required this.title,
+      {required this.title,
+      this.id,
       final List<Task>? tasks,
       this.sortyBy = SortBy.createdDateAsc,
       this.color = TagColor.noColor,
@@ -193,9 +193,9 @@ class _$_Project implements _Project {
       : _tasks = tasks;
 
   @override
-  final int? id;
-  @override
   final String title;
+  @override
+  final int? id;
   final List<Task>? _tasks;
   @override
   List<Task>? get tasks {
@@ -222,7 +222,7 @@ class _$_Project implements _Project {
 
   @override
   String toString() {
-    return 'Project(id: $id, title: $title, tasks: $tasks, sortyBy: $sortyBy, color: $color, archived: $archived, createdOn: $createdOn, updatedOn: $updatedOn)';
+    return 'Project(title: $title, id: $id, tasks: $tasks, sortyBy: $sortyBy, color: $color, archived: $archived, createdOn: $createdOn, updatedOn: $updatedOn)';
   }
 
   @override
@@ -230,8 +230,8 @@ class _$_Project implements _Project {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Project &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
+            (identical(other.id, id) || other.id == id) &&
             const DeepCollectionEquality().equals(other._tasks, _tasks) &&
             (identical(other.sortyBy, sortyBy) || other.sortyBy == sortyBy) &&
             (identical(other.color, color) || other.color == color) &&
@@ -246,8 +246,8 @@ class _$_Project implements _Project {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      id,
       title,
+      id,
       const DeepCollectionEquality().hash(_tasks),
       sortyBy,
       color,
@@ -264,8 +264,8 @@ class _$_Project implements _Project {
 
 abstract class _Project implements Project {
   const factory _Project(
-      {final int? id,
-      required final String title,
+      {required final String title,
+      final int? id,
       final List<Task>? tasks,
       final SortBy sortyBy,
       final TagColor color,
@@ -274,9 +274,9 @@ abstract class _Project implements Project {
       final DateTime? updatedOn}) = _$_Project;
 
   @override
-  int? get id;
-  @override
   String get title;
+  @override
+  int? get id;
   @override
   List<Task>? get tasks;
   @override

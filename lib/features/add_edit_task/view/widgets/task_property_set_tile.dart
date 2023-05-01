@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class TaskPropertySetTile extends StatelessWidget {
   const TaskPropertySetTile({
-    super.key,
+    required this.content,
     required this.icon,
     this.iconColor,
-    required this.content,
     this.onTap,
+    super.key,
   });
   final IconData icon;
   final Color? iconColor;

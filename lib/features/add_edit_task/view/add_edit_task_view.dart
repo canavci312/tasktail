@@ -1,22 +1,23 @@
 import 'package:calendar_time/calendar_time.dart';
+import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_app/domain/repositories/models/checklist_item.dart';
 import 'package:task_app/domain/repositories/models/project.dart';
 import 'package:task_app/domain/repositories/models/tag.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
-import 'package:task_app/extensions/string_extensions.dart';
 import 'package:task_app/features/add_edit_task/add_edit_task.dart';
 import 'package:task_app/features/add_edit_task/view/widgets/task_property_set_tile.dart';
 import 'package:task_app/features/checklist/view/checklist_page.dart';
 import 'package:task_app/features/select_project/view/select_project_page.dart';
 import 'package:task_app/features/tags/select_tag/select_tag.dart';
 import 'package:task_app/features/timeline/view/timeline_view.dart';
+import 'package:task_app/utils/extensions/string_extensions.dart';
 
 class AddEditTaskView extends StatefulWidget {
   const AddEditTaskView({
-    super.key,
     required this.task,
+    super.key,
   });
   final Task? task;
 
@@ -41,11 +42,14 @@ class _AddEditTaskViewState extends State<AddEditTaskView> {
     final cubit = context.read<AddEditTaskCubit>();
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          cubit.saveTask();
+          Navigator.of(context).pop();
+        },
         label: const Text('Save'),
       ),
       appBar: AppBar(
-        title: Text(widget.task == null ? 'Create Task' : 'Edit Task'),
+        title: Text(widget.task?.title == null ? 'Create Task' : 'Edit Task'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -295,7 +299,7 @@ class SelectDateTime extends StatelessWidget {
                 onTap: () async {
                   final result = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now(),
+                    initialDate: state.dueDate ?? DateTime.now(),
                     firstDate: DateTime.now(),
                     lastDate: DateTime.now().add(const Duration(days: 365)),
                   );
@@ -304,7 +308,15 @@ class SelectDateTime extends StatelessWidget {
                   }
                 },
                 child: Chip(
-                  label: Text(CalendarTime(state.dueDate).toHumanArray[0]),
+                  label: Text(
+                    CalendarTime(state.dueDate).toHumanArray.length == 1
+                        ? CalendarTime(state.dueDate).format(
+                            state.dueDate!.isThisYear
+                                ? 'EEE, MMM d'
+                                : 'EEE, MMM d, ' 'yy',
+                          )
+                        : CalendarTime(state.dueDate).toHumanArray[0],
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -321,7 +333,11 @@ class SelectDateTime extends StatelessWidget {
                     }
                   },
                   child: Chip(
-                    label: Text(CalendarTime(state.dueDate).toHumanArray[1]),
+                    label: Text(
+                      CalendarTime(state.dueDate).toHumanArray.length == 1
+                          ? CalendarTime(state.dueDate).format('h:mm a')
+                          : CalendarTime(state.dueDate).toHumanArray[1],
+                    ),
                   ),
                 ),
               ),
@@ -351,21 +367,19 @@ class AssignTags extends StatelessWidget {
           content: state.tags != null && state.tags!.isNotEmpty
               ? SizedBox(
                   height: 40,
-                  child: Flexible(
-                    child: ListView.builder(
-                      itemCount: state.tags!.length,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: Chip(
-                            label: Text(state.tags![index].name),
-                            backgroundColor: state.tags![index].color.toColor(),
-                          ),
-                        );
-                      },
-                    ),
+                  child: ListView.builder(
+                    itemCount: state.tags!.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Chip(
+                          label: Text(state.tags![index].name),
+                          backgroundColor: state.tags![index].color.toColor(),
+                        ),
+                      );
+                    },
                   ),
                 )
               : const Text('Assign tags'),

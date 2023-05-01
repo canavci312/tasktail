@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:task_app/features/timeline/timeline.dart';
 import 'package:task_app/features/timeline/view/timeline_view.dart';
+import 'package:task_app/locator.dart';
 
 @RoutePage()
 class TimelinePage extends StatelessWidget {
@@ -15,7 +16,7 @@ class TimelinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TimelineCubit(),
+      create: (context) => TimelineCubit(getIt())..listenTasks(),
       child: const TimelineView(),
     );
   }

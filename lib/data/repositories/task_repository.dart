@@ -5,6 +5,13 @@ import 'package:task_app/domain/repositories/models/task.dart';
 class TaskRepository {
   TaskRepository({required this.localProvider});
   final Isar localProvider;
+  Stream<List<Task>> listenTasks(){
+    return localProvider
+        .collection<TaskDto>()
+        .buildQuery<TaskDto>()
+        .watch(fireImmediately: true)
+        .map((event) => event.map((e) => e.toDomainModel()).toList());
+  }
   List<TaskDto> getTasks() {
     return localProvider
         .collection<TaskDto>()

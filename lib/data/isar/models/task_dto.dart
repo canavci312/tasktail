@@ -11,10 +11,11 @@ part 'task_dto.g.dart';
 class TaskDto {
   TaskDto({
     required this.title,
+    this.id,
     this.description,
     this.dueDate,
     this.priority = Priority.noPriority,
-    required this.createdOn,
+    this.createdOn,
     this.updatedOn,
     this.isNote = false,
     this.isCompleted = false,
@@ -22,7 +23,8 @@ class TaskDto {
     this.checklist,
   });
   factory TaskDto.fromDomainModel(Task task) {
-    return TaskDto(
+    final taskDto = TaskDto(
+      id: task.id,
       title: task.title!,
       description: task.description,
       dueDate: task.dueDate,
@@ -36,7 +38,12 @@ class TaskDto {
       checklist: task.checklist
           ?.map((e) => CheckListItemDto.fromDomainModel(e))
           .toList(),
-    );
+    )..project.value =
+        task.project != null ? ProjectDto.fromDomainModel(task.project!) : null;
+    if (task.tags != null) {
+      taskDto.tags.addAll(task.tags!.map((e) => TagDto.fromDomainModel(e)));
+    }
+    return taskDto;
   }
   Id? id;
   final String title;
@@ -50,13 +57,14 @@ class TaskDto {
   final project = IsarLink<ProjectDto>();
   final tags = IsarLinks<TagDto>();
   final List<CheckListItemDto>? checklist;
-  final DateTime createdOn;
+  final DateTime? createdOn;
   final DateTime? updatedOn;
   final List<ReminderDto> reminders;
 
   //from to domain model
   Task toDomainModel() {
     return Task(
+      id: id,
       title: title,
       description: description,
       dueDate: dueDate,

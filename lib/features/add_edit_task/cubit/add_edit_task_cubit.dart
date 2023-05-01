@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:task_app/data/repositories/task_repository.dart';
 import 'package:task_app/domain/repositories/models/checklist_item.dart';
 import 'package:task_app/domain/repositories/models/project.dart';
 import 'package:task_app/domain/repositories/models/tag.dart';
@@ -11,7 +12,7 @@ part 'add_edit_task_state.dart';
 part 'add_edit_task_cubit.freezed.dart';
 
 class AddEditTaskCubit extends Cubit<AddEditTaskState> {
-  AddEditTaskCubit(this.task)
+  AddEditTaskCubit(this.task, this._taskRepository)
       : super(
           AddEditTaskState(
             checkListItems: task?.checklist ?? [],
@@ -23,6 +24,7 @@ class AddEditTaskCubit extends Cubit<AddEditTaskState> {
             title: task?.title,
           ),
         );
+  final TaskRepository _taskRepository;
   final Task? task;
   void priorityChanged(Priority value) {
     emit(state.copyWith(priority: value));
@@ -76,5 +78,19 @@ class AddEditTaskCubit extends Cubit<AddEditTaskState> {
 
   void projectSelected(Project? project) {
     emit(state.copyWith(project: project));
+  }
+
+  void saveTask() {
+    final newTask = Task(
+      id: task?.id,
+      title: state.title,
+      description: state.description,
+      dueDate: state.dueDate,
+      priority: state.priority ?? Priority.noPriority,
+      project: state.project,
+      tags: state.tags,
+      checklist: state.checkListItems,
+    );
+    _taskRepository.insertTask(newTask);
   }
 }

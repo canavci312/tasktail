@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
 import 'package:task_app/features/add_edit_task/add_edit_task.dart';
 import 'package:task_app/features/add_edit_task/view/add_edit_task_view.dart';
+import 'package:task_app/locator.dart';
 
 @RoutePage()
 class AddEditTaskPage extends StatelessWidget {
@@ -16,7 +17,7 @@ class AddEditTaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AddEditTaskCubit(task),
+      create: (context) => AddEditTaskCubit(task, getIt()),
       child: AddEditTaskView(
         task: task,
       ),

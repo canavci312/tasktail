@@ -4,7 +4,10 @@ import 'package:task_app/domain/repositories/models/tag.dart';
 import 'package:task_app/features/widgets/color_picker.dart';
 
 class DuplicateDialog extends StatefulWidget {
-  const DuplicateDialog({super.key, required this.project});
+  const DuplicateDialog({
+    required this.project,
+    super.key,
+  });
   final Project project;
 
   @override

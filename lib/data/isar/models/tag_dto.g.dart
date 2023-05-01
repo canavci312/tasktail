@@ -40,7 +40,7 @@ const TagDtoSchema = CollectionSchema(
   getId: _tagDtoGetId,
   getLinks: _tagDtoGetLinks,
   attach: _tagDtoAttach,
-  version: '3.1.0',
+  version: '3.1.0+1',
 );
 
 int _tagDtoEstimateSize(
@@ -72,9 +72,9 @@ TagDto _tagDtoDeserialize(
   final object = TagDto(
     color: _TagDtocolorValueEnumMap[reader.readByteOrNull(offsets[0])] ??
         TagColor.noColor,
+    id: id,
     name: reader.readString(offsets[1]),
   );
-  object.id = id;
   return object;
 }
 

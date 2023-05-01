@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:task_app/data/repositories/tag_repository.dart';
@@ -16,14 +18,22 @@ class SelectTagCubit extends Cubit<SelectTagState> {
         );
   final TagRepository tagRepository;
   final List<Tag>? alreadySelected;
+
+  late StreamSubscription<List<Tag>> _tagSubscription;
   void listenTags() {
-    tagRepository.listenTags().listen((event) {
+    _tagSubscription = tagRepository.listenTags().listen((event) {
       emit(
         state.copyWith(
           tags: event,
         ),
       );
     });
+  }
+
+  @override
+  Future<void> close() {
+    _tagSubscription.cancel();
+    return super.close();
   }
 
   void selectTag(Tag tag) {

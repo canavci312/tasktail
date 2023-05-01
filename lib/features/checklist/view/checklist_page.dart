@@ -6,9 +6,9 @@ import 'package:task_app/features/checklist/view/checklist_view.dart';
 
 class ChecklistPage extends StatelessWidget {
   const ChecklistPage({
-    super.key,
     required this.items,
     required this.onListChanged,
+    super.key,
   });
   final List<CheckListItem> items;
   final void Function(List<CheckListItem> items) onListChanged;

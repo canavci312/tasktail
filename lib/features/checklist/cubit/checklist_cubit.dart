@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:task_app/domain/repositories/models/checklist_item.dart';
-import 'package:task_app/extensions/list_extensions.dart';
+import 'package:task_app/utils/extensions/list_extensions.dart';
 
 part 'checklist_state.dart';
 part 'checklist_cubit.freezed.dart';

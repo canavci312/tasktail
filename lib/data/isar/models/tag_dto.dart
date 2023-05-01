@@ -6,10 +6,12 @@ part 'tag_dto.g.dart';
 class TagDto {
   TagDto({
     required this.name,
+    this.id,
     this.color = TagColor.noColor,
   });
   factory TagDto.fromDomainModel(Tag tag) {
     return TagDto(
+      id: tag.id,
       name: tag.name,
       color: tag.color,
     );
@@ -22,6 +24,7 @@ class TagDto {
   //from domain model
   Tag toDomainModel() {
     return Tag(
+      id: id,
       name: name,
       color: color,
     );

@@ -29,7 +29,7 @@ class BoardView extends StatelessWidget {
 
         return Scaffold(
           floatingActionButtonLocation: ExpandableFab.location,
-          floatingActionButton: AppExpandableFab(),
+          floatingActionButton: AppExpandableFab(selectedDate:DateTime.now()),
           appBar: AppBar(
             title: const Text('Board'),
             actions: [
@@ -114,70 +114,66 @@ class BoardView extends StatelessWidget {
                       ),
                       if (state.selectedProject == null)
                         SingleChildScrollView(
-                          child: Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: ReorderableListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      final item = activeProjects[index];
-                                      return Card(
-                                        key: UniqueKey(),
-                                        child: ListTile(
-                                          leading: const Icon(
-                                            Icons.drag_handle_outlined,
-                                          ),
-                                          title: Text(item.title),
-                                          trailing: Icon(
-                                            Icons.circle,
-                                            color: item.color.toColor(),
-                                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: ReorderableListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    final item = activeProjects[index];
+                                    return Card(
+                                      key: UniqueKey(),
+                                      child: ListTile(
+                                        leading: const Icon(
+                                          Icons.drag_handle_outlined,
                                         ),
-                                      );
-                                    },
-                                    itemCount: activeProjects.length,
-                                    onReorder: cubit.reorderProjects,
-                                  ),
+                                        title: Text(item.title),
+                                        trailing: Icon(
+                                          Icons.circle,
+                                          color: item.color.toColor(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  itemCount: activeProjects.length,
+                                  onReorder: cubit.reorderProjects,
                                 ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 8),
-                                  child: Divider(),
-                                ),
-                                Text(
-                                  'Archived projects',
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                ),
-                                Flexible(
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: state.projects
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8),
+                                child: Divider(),
+                              ),
+                              Text(
+                                'Archived projects',
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                              Flexible(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: state.projects
+                                      .where((element) => element.archived)
+                                      .length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final item = state.projects
                                         .where((element) => element.archived)
-                                        .length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      final item = state.projects
-                                          .where((element) => element.archived)
-                                          .toList()[index];
-                                      return Card(
-                                        child: ListTile(
-                                          title: Text(item.title),
-                                          trailing:
-                                              const Icon(Icons.delete_outline),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                        .toList()[index];
+                                    return Card(
+                                      child: ListTile(
+                                        title: Text(item.title),
+                                        trailing:
+                                            const Icon(Icons.delete_outline),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         )
                       else

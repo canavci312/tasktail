@@ -99,7 +99,7 @@ const TaskDtoSchema = CollectionSchema(
   getId: _taskDtoGetId,
   getLinks: _taskDtoGetLinks,
   attach: _taskDtoAttach,
-  version: '3.1.0',
+  version: '3.1.0+1',
 );
 
 int _taskDtoEstimateSize(
@@ -181,9 +181,10 @@ TaskDto _taskDtoDeserialize(
       allOffsets,
       CheckListItemDto(),
     ),
-    createdOn: reader.readDateTime(offsets[1]),
+    createdOn: reader.readDateTimeOrNull(offsets[1]),
     description: reader.readStringOrNull(offsets[2]),
     dueDate: reader.readDateTimeOrNull(offsets[3]),
+    id: id,
     isCompleted: reader.readBoolOrNull(offsets[4]) ?? false,
     isNote: reader.readBoolOrNull(offsets[5]) ?? false,
     priority: _TaskDtopriorityValueEnumMap[reader.readByteOrNull(offsets[6])] ??
@@ -198,7 +199,6 @@ TaskDto _taskDtoDeserialize(
     title: reader.readString(offsets[8]),
     updatedOn: reader.readDateTimeOrNull(offsets[9]),
   );
-  object.id = id;
   return object;
 }
 
@@ -217,7 +217,7 @@ P _taskDtoDeserializeProp<P>(
         CheckListItemDto(),
       )) as P;
     case 1:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
@@ -453,8 +453,24 @@ extension TaskDtoQueryFilter
     });
   }
 
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> createdOnIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'createdOn',
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> createdOnIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'createdOn',
+      ));
+    });
+  }
+
   QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> createdOnEqualTo(
-      DateTime value) {
+      DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'createdOn',
@@ -464,7 +480,7 @@ extension TaskDtoQueryFilter
   }
 
   QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> createdOnGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -477,7 +493,7 @@ extension TaskDtoQueryFilter
   }
 
   QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> createdOnLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -490,8 +506,8 @@ extension TaskDtoQueryFilter
   }
 
   QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> createdOnBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1514,7 +1530,7 @@ extension TaskDtoQueryProperty
     });
   }
 
-  QueryBuilder<TaskDto, DateTime, QQueryOperations> createdOnProperty() {
+  QueryBuilder<TaskDto, DateTime?, QQueryOperations> createdOnProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'createdOn');
     });

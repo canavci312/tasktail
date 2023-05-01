@@ -1,70 +1,256 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:intl/intl.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
-
 import 'package:task_app/features/timeline/timeline.dart';
 import 'package:task_app/features/widgets/expandable_fab.dart';
 import 'package:task_app/navigation/router.dart';
+import 'package:task_app/utils/date_utils.dart';
 import 'package:timelines/timelines.dart';
 
-class TimelineView extends StatelessWidget {
+class TimelineView extends StatefulWidget {
   const TimelineView({
     super.key,
   });
 
   @override
+  State<TimelineView> createState() => _TimelineViewState();
+}
+
+class _TimelineViewState extends State<TimelineView> {
+  final AutoScrollController controller = AutoScrollController();
+  final PageController pageController = PageController();
+  @override
   Widget build(BuildContext context) {
     final cubit = context.read<TimelineCubit>();
-    return Scaffold(
-      floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: AppExpandableFab(),
-      appBar: AppBar(
-        title: const Text('Tasktail'),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.more_horiz_outlined),
-          )
-        ],
-      ),
-      body: ListView.builder(
-        itemCount: 100,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        itemBuilder: (BuildContext context, int index) {
-          return TimelineDayTile(
-            tasks: [
-              Task(
-                title: 'Task 1',
-                description: 'Description 1',
-                dueDate: DateTime.now(),
-                isCompleted: true,
-                createdOn: DateTime.now(),
+    return BlocBuilder<TimelineCubit, TimelineState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Tasktail'),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  showSearch(
+                    context: context,
+                    delegate: CustomSearchDelegate(cubit),
+                  );
+                },
+                icon: const Icon(Icons.search_outlined),
               ),
-              Task(
-                title: 'Task 2',
-                description: 'Description 2',
-                dueDate: DateTime.now(),
-                createdOn: DateTime.now(),
-              ),
+              IconButton(
+                onPressed: () {
+                  cubit.toggleViewMode();
+                },
+                icon: const Icon(Icons.loop_outlined),
+              )
             ],
-            date: DateTime.now().add(
-              Duration(days: index),
+          ),
+          floatingActionButtonLocation: ExpandableFab.location,
+          floatingActionButton: AppExpandableFab(
+            selectedDate: state.selectedDate,
+          ),
+          body: state.viewMode == ViewMode.timeline
+              ? CustomScrollView(
+                  controller: controller,
+                  slivers: [
+                    _calendarAppBar(state, context, cubit),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: AutoScrollTag(
+                            key: ValueKey(index),
+                            controller: controller,
+                            index: index,
+                            child: TimelineDayTile(
+                              tasks: state.tasks.where((element) {
+                                return element.dueDate != null &&
+                                    element.dueDate!.isSameDay(
+                                      DateTime.now().add(
+                                        Duration(days: index),
+                                      ),
+                                    );
+                              }).toList(),
+                              date: DateTime.now().add(
+                                Duration(days: index),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              : NestedScrollView(
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      _calendarAppBar(state, context, cubit),
+                    ];
+                  },
+                  body: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: PageView.builder(
+                      controller: pageController,
+                      onPageChanged: (value) => cubit.onDateSelected(
+                        DateTime.now().add(
+                          Duration(days: value),
+                        ),
+                      ),
+                      itemBuilder: (context, index) {
+                        return TimelineDayTile(
+                          tasks: state.tasks.where((element) {
+                            return element.dueDate != null &&
+                                element.dueDate!.isSameDay(
+                                  DateTime.now().add(
+                                    Duration(days: index),
+                                  ),
+                                );
+                          }).toList(),
+                          date: DateTime.now().add(
+                            Duration(days: index),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+        );
+      },
+    );
+  }
+
+  SliverAppBar _calendarAppBar(
+    TimelineState state,
+    BuildContext context,
+    TimelineCubit cubit,
+  ) {
+    return SliverAppBar(
+      expandedHeight: state.timeLineFormat == CalendarFormat.week ? 150 : 400,
+      snap: true,
+      floating: true,
+      flexibleSpace: FlexibleSpaceBar(
+        background: TableCalendar<DateTime>(
+          currentDay: DateTime.now(),
+          selectedDayPredicate: (day) => isSameDay(day, state.selectedDate),
+          focusedDay: state.selectedDate,
+          calendarStyle: CalendarStyle(
+            selectedDecoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              shape: BoxShape.circle,
             ),
-          );
-        },
+            todayDecoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.5),
+              shape: BoxShape.circle,
+            ),
+            selectedTextStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+            todayTextStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
+          firstDay: DateTime(1990),
+          lastDay: DateTime(2050),
+          availableCalendarFormats: const {
+            CalendarFormat.month: 'Month',
+            CalendarFormat.week: 'Week'
+          },
+          calendarFormat: state.timeLineFormat,
+          onDaySelected: (date, focusedDay) {
+            cubit.onDateSelected(date);
+            state.viewMode == ViewMode.timeline
+                ? controller.scrollToIndex(
+                    date.differenceInDays(DateTime.now()) + 1,
+                    preferPosition: AutoScrollPosition.begin,
+                  )
+                : pageController.jumpToPage(
+                    date.isSameDay(DateTime.now())
+                        ? 0
+                        : date.differenceInDays(DateTime.now()) + 1,
+                  );
+          },
+          onFormatChanged: (format) {
+            cubit.onFormatChanged(format);
+          },
+        ),
       ),
     );
   }
 }
 
+class CustomSearchDelegate extends SearchDelegate {
+  CustomSearchDelegate(this.cubit);
+  final TimelineCubit cubit;
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear_outlined),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return null;
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    cubit.onSearch(query);
+    return ListView.builder(
+      itemCount: cubit.state.searchedTasks.length,
+      itemBuilder: (context, index) {
+        final task = cubit.state.searchedTasks[index];
+        return ListTile(
+          onTap: () {
+            context.router.push(
+              AddEditTaskRoute(task: task),
+            );
+          },
+          title: Text(task.title!),
+          subtitle: Text(task.description!),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    cubit.onSearch(query);
+    return ListView.builder(
+      itemCount: cubit.state.searchedTasks.length,
+      itemBuilder: (context, index) {
+        final task = cubit.state.searchedTasks[index];
+        return ListTile(
+          onTap: () {
+            context.router.push(
+              AddEditTaskRoute(task: task),
+            );
+          },
+          title: Text(task.title!),
+          subtitle: Text(task.description!),
+        );
+      },
+    );
+  }
+}
+
 class TimelineDayTile extends StatelessWidget {
-  const TimelineDayTile({super.key, this.tasks, required this.date});
+  const TimelineDayTile({
+    required this.date,
+    super.key,
+    this.tasks,
+  });
   final List<Task>? tasks;
   final DateTime date;
   @override
@@ -152,29 +338,41 @@ class TimelineDayTile extends StatelessWidget {
                 builder: TimelineTileBuilder.connected(
                   indicatorBuilder: (context, index) {
                     if (index == tasks?.length) {
-                      return OutlinedDotIndicator(
-                        color: Theme.of(context).primaryColor,
-                        child: const Icon(
-                          Icons.add,
-                          size: 20,
+                      return InkWell(
+                        onTap: () => context.router.push(
+                          AddEditTaskRoute(
+                            task: Task(
+                              dueDate: AppDateUtils.setAddTaskDate(date),
+                            ),
+                          ),
+                        ),
+                        child: OutlinedDotIndicator(
+                          color: Theme.of(context).primaryColor,
+                          child: const Icon(
+                            Icons.add,
+                            size: 20,
+                          ),
                         ),
                       );
                     }
-                    if (tasks![index].isCompleted) {
-                      return DotIndicator(
-                        color: Theme.of(context).primaryColor,
-                        child: const Icon(
-                          Icons.check,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      );
-                    } else {
-                      return OutlinedDotIndicator(
-                        size: 20,
-                        color: Theme.of(context).primaryColor,
-                      );
-                    }
+                    return InkWell(
+                      onTap: () => context
+                          .read<TimelineCubit>()
+                          .toggleDone(tasks![index]),
+                      child: tasks![index].isCompleted
+                          ? DotIndicator(
+                              color: Theme.of(context).primaryColor,
+                              child: Icon(
+                                Icons.check,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                size: 20,
+                              ),
+                            )
+                          : OutlinedDotIndicator(
+                              size: 20,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                    );
                   },
                   connectorBuilder: (context, index, type) {
                     return SolidLineConnector(
@@ -186,11 +384,20 @@ class TimelineDayTile extends StatelessWidget {
                   },
                   contentsBuilder: (context, index) {
                     if (index == tasks?.length) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(
-                          'Add Task',
-                          style: Theme.of(context).textTheme.bodyLarge,
+                      return InkWell(
+                        onTap: () => context.router.push(
+                          AddEditTaskRoute(
+                            task: Task(
+                              dueDate: AppDateUtils.setAddTaskDate(date),
+                            ),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'Add Task',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
                         ),
                       );
                     }
@@ -201,7 +408,12 @@ class TimelineDayTile extends StatelessWidget {
               ),
             )
           else
-            const AddTaskButton()
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: AddTaskButton(
+                date: date,
+              ),
+            )
         ],
       ),
     );
@@ -210,25 +422,37 @@ class TimelineDayTile extends StatelessWidget {
 
 class AddTaskButton extends StatelessWidget {
   const AddTaskButton({
+    required this.date,
     super.key,
   });
+  final DateTime date;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Icon(Icons.add_circle_outline_outlined),
-        Text(
-          'Add Task',
-          style: Theme.of(context).textTheme.bodyLarge,
+    return InkWell(
+      onTap: () => context.router.push(
+        AddEditTaskRoute(
+          task: Task(dueDate: AppDateUtils.setAddTaskDate(date)),
         ),
-      ],
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.add_circle_outline_outlined),
+          Text(
+            'Add Task',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ],
+      ),
     );
   }
 }
 
 class TaskTile extends StatelessWidget {
-  const TaskTile({super.key, required this.task});
+  const TaskTile({
+    required this.task,
+    super.key,
+  });
   final Task task;
   @override
   Widget build(BuildContext context) {
@@ -248,7 +472,6 @@ class TaskTile extends StatelessWidget {
     );
   }
 }
-
 
 enum Priority {
   noPriority,

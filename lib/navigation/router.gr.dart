@@ -39,6 +39,16 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const UnplannedPage(),
       );
     },
+    ProjectSettingsRoute.name: (routeData) {
+      final args = routeData.argsAs<ProjectSettingsRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ProjectSettingsPage(
+          args.project,
+          key: args.key,
+        ),
+      );
+    },
     AddEditTaskRoute.name: (routeData) {
       final args = routeData.argsAs<AddEditTaskRouteArgs>(
           orElse: () => const AddEditTaskRouteArgs());
@@ -54,16 +64,6 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const TimelinePage(),
-      );
-    },
-    ProjectSettingsRoute.name: (routeData) {
-      final args = routeData.argsAs<ProjectSettingsRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: ProjectSettingsPage(
-          args.project,
-          key: args.key,
-        ),
       );
     },
   };
@@ -126,6 +126,44 @@ class UnplannedRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ProjectSettingsPage]
+class ProjectSettingsRoute extends PageRouteInfo<ProjectSettingsRouteArgs> {
+  ProjectSettingsRoute({
+    required Project project,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ProjectSettingsRoute.name,
+          args: ProjectSettingsRouteArgs(
+            project: project,
+            key: key,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ProjectSettingsRoute';
+
+  static const PageInfo<ProjectSettingsRouteArgs> page =
+      PageInfo<ProjectSettingsRouteArgs>(name);
+}
+
+class ProjectSettingsRouteArgs {
+  const ProjectSettingsRouteArgs({
+    required this.project,
+    this.key,
+  });
+
+  final Project project;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'ProjectSettingsRouteArgs{project: $project, key: $key}';
+  }
+}
+
+/// generated route for
 /// [AddEditTaskPage]
 class AddEditTaskRoute extends PageRouteInfo<AddEditTaskRouteArgs> {
   AddEditTaskRoute({
@@ -175,42 +213,4 @@ class TimelineRoute extends PageRouteInfo<void> {
   static const String name = 'TimelineRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [ProjectSettingsPage]
-class ProjectSettingsRoute extends PageRouteInfo<ProjectSettingsRouteArgs> {
-  ProjectSettingsRoute({
-    required Project project,
-    Key? key,
-    List<PageRouteInfo>? children,
-  }) : super(
-          ProjectSettingsRoute.name,
-          args: ProjectSettingsRouteArgs(
-            project: project,
-            key: key,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'ProjectSettingsRoute';
-
-  static const PageInfo<ProjectSettingsRouteArgs> page =
-      PageInfo<ProjectSettingsRouteArgs>(name);
-}
-
-class ProjectSettingsRouteArgs {
-  const ProjectSettingsRouteArgs({
-    required this.project,
-    this.key,
-  });
-
-  final Project project;
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'ProjectSettingsRouteArgs{project: $project, key: $key}';
-  }
 }
