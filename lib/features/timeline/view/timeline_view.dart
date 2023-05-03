@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:calendar_time/calendar_time.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -166,7 +167,9 @@ class _TimelineViewState extends State<TimelineView> {
             cubit.onDateSelected(date);
             state.viewMode == ViewMode.timeline
                 ? controller.scrollToIndex(
-                    date.differenceInDays(DateTime.now()) + 1,
+                    date.isSameDay(DateTime.now())
+                        ? 0
+                        : date.differenceInDays(DateTime.now()) + 1,
                     preferPosition: AutoScrollPosition.begin,
                   )
                 : pageController.jumpToPage(
@@ -184,6 +187,7 @@ class _TimelineViewState extends State<TimelineView> {
   }
 }
 
+// ignore: strict_raw_type
 class CustomSearchDelegate extends SearchDelegate {
   CustomSearchDelegate(this.cubit);
   final TimelineCubit cubit;
@@ -238,7 +242,7 @@ class CustomSearchDelegate extends SearchDelegate {
             );
           },
           title: Text(task.title!),
-          subtitle: Text(task.description!),
+          subtitle: task.description != null ? Text(task.description!) : null,
         );
       },
     );
@@ -355,6 +359,21 @@ class TimelineDayTile extends StatelessWidget {
                         ),
                       );
                     }
+                    if (tasks![index].isNote) {
+                      return InkWell(
+                        onTap: () => context.router.push(
+                          AddEditTaskRoute(
+                            task: tasks![index],
+                          ),
+                        ),
+                        child: ContainerIndicator(
+                          size: 20,
+                          child: Container(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      );
+                    }
                     return InkWell(
                       onTap: () => context
                           .read<TimelineCubit>()
@@ -462,11 +481,93 @@ class TaskTile extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(task.description ?? ''),
-          if (task.dueDate != null)
-            Text(DateFormat('HH').format(task.dueDate!))
-          else
-            const SizedBox.shrink(),
+          Visibility(
+            visible: task.description != null,
+            child: Row(
+              children: [
+                Text(
+                  task.description ?? '',
+                ),
+              ],
+            ),
+          ),
+          Wrap(
+            children: [
+              Visibility(
+                visible: task.dueDate != null,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.access_time_rounded,
+                        size: 16,
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(CalendarTime(task.dueDate).format('h:mm a')),
+                    ],
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: task.priority != Priority.noPriority,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 4),
+                  child: Icon(
+                    Icons.flag,
+                    size: 16,
+                    color: task.priority.color,
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: task.reminders.isNotEmpty,
+                child: const Icon(
+                  Icons.alarm_outlined,
+                  size: 16,
+                ),
+              ),
+              Visibility(
+                visible: task.checklist != null && task.checklist!.isNotEmpty,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.checklist_outlined,
+                      size: 16,
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      '${task.checklist?.where((element) {
+                        return element.isCompleted;
+                      }).length} / ${task.checklist?.length}',
+                    ),
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: task.project != null,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.circle,
+                      size: 16,
+                      color: task.project?.color.toColor(),
+                    ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      task.project?.title ?? '',
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ],
       ),
     );

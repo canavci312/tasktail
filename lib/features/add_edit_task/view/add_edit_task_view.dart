@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_app/domain/repositories/models/checklist_item.dart';
 import 'package:task_app/domain/repositories/models/project.dart';
+import 'package:task_app/domain/repositories/models/reminder.dart';
 import 'package:task_app/domain/repositories/models/tag.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
 import 'package:task_app/features/add_edit_task/add_edit_task.dart';
@@ -37,6 +38,22 @@ class _AddEditTaskViewState extends State<AddEditTaskView> {
     }
   }
 
+  String getTitle() {
+    // ignore: use_if_null_to_convert_nulls_to_bools
+    if (widget.task?.isNote == true) {
+      if (widget.task?.title == null) {
+        return 'Create Note';
+      } else {
+        return 'Edit Note';
+      }
+    }
+    if (widget.task?.title == null) {
+      return 'Create Task';
+    } else {
+      return 'Edit Task';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AddEditTaskCubit>();
@@ -49,7 +66,7 @@ class _AddEditTaskViewState extends State<AddEditTaskView> {
         label: const Text('Save'),
       ),
       appBar: AppBar(
-        title: Text(widget.task?.title == null ? 'Create Task' : 'Edit Task'),
+        title: Text(getTitle()),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -228,44 +245,79 @@ class SetReminder extends StatelessWidget {
                   title: Text(
                     'Scheduled time (${TimeOfDay.now().format(context)})',
                   ),
+                  onTap: () => Navigator.of(context).pop(
+                    Reminder(
+                      date: DateTime.now(),
+                      type: ReminderType.onTime,
+                    ),
+                  ),
                 ),
                 ListTile(
                   title: Text(
                     '5 mins before (${TimeOfDay.now().format(context)})',
+                  ),
+                  onTap: () => Navigator.of(context).pop(
+                    Reminder(
+                      date: DateTime.now(),
+                      type: ReminderType.fiveMinutes,
+                    ),
                   ),
                 ),
                 ListTile(
                   title: Text(
                     '10 mins before (${TimeOfDay.now().format(context)})',
                   ),
+                  onTap: () => Navigator.of(context).pop(
+                    Reminder(
+                      date: DateTime.now(),
+                      type: ReminderType.tenMinutes,
+                    ),
+                  ),
                 ),
                 ListTile(
                   title: Text(
                     '1 hour before (${TimeOfDay.now().format(context)})',
                   ),
+                  onTap: () => Navigator.of(context).pop(
+                    Reminder(
+                      date: DateTime.now(),
+                      type: ReminderType.oneHour,
+                    ),
+                  ),
                 ),
                 ListTile(
                   leading: const Icon(Icons.alarm_outlined),
                   title: const Text('At a specific time'),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    showTimePicker(
+                  onTap: () async {
+                    final result = await showTimePicker(
                       context: context,
                       initialTime: TimeOfDay.now(),
                     );
+                    if (result != null && context.mounted) {
+                      Navigator.of(context).pop(
+                        Reminder(type: ReminderType.atSpecificTime),
+                      );
+                    }
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.alarm_add_outlined),
                   title: const Text('At a specific date and time'),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    showDatePicker(
+                  onTap: () async {
+                    final result = await showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime.now(),
                       lastDate: DateTime.now().add(const Duration(days: 365)),
                     );
+                    if (result != null && context.mounted) {
+                      Navigator.of(context).pop(
+                        Reminder(
+                          date: result,
+                          type: ReminderType.atSpecificTimeAndDate,
+                        ),
+                      );
+                    }
                   },
                 ),
                 ListTile(

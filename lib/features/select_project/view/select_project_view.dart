@@ -13,7 +13,6 @@ class SelectProjectView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<SelectProjectCubit>();
     return BlocBuilder<SelectProjectCubit, SelectProjectState>(
       builder: (context, state) {
         return Padding(

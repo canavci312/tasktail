@@ -47,6 +47,11 @@ class AppExpandableFab extends StatelessWidget {
           heroTag: null,
           onPressed: () {
             _key.currentState!.toggle();
+            context.router.push(
+              AddEditTaskRoute(
+                task: Task(dueDate: selectedDate, isNote: true),
+              ),
+            );
           },
           extendedPadding:
               const EdgeInsets.symmetric(vertical: 4, horizontal: 16),

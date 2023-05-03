@@ -1,9 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:task_app/features/home/home.dart';
 import 'package:task_app/navigation/router.dart';
 
 class HomeView extends StatelessWidget {
@@ -13,7 +9,6 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<HomeCubit>();
     return AutoTabsScaffold(
       routes: const [
         TimelineRoute(),

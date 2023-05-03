@@ -17,6 +17,12 @@ const ReminderDtoSchema = Schema(
       id: 0,
       name: r'date',
       type: IsarType.dateTime,
+    ),
+    r'type': PropertySchema(
+      id: 1,
+      name: r'type',
+      type: IsarType.byte,
+      enumMap: _ReminderDtotypeEnumValueMap,
     )
   },
   estimateSize: _reminderDtoEstimateSize,
@@ -41,6 +47,7 @@ void _reminderDtoSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDateTime(offsets[0], object.date);
+  writer.writeByte(offsets[1], object.type.index);
 }
 
 ReminderDto _reminderDtoDeserialize(
@@ -51,6 +58,8 @@ ReminderDto _reminderDtoDeserialize(
 ) {
   final object = ReminderDto(
     date: reader.readDateTimeOrNull(offsets[0]),
+    type: _ReminderDtotypeValueEnumMap[reader.readByteOrNull(offsets[1])] ??
+        ReminderType.onTime,
   );
   return object;
 }
@@ -64,10 +73,30 @@ P _reminderDtoDeserializeProp<P>(
   switch (propertyId) {
     case 0:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 1:
+      return (_ReminderDtotypeValueEnumMap[reader.readByteOrNull(offset)] ??
+          ReminderType.onTime) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
+
+const _ReminderDtotypeEnumValueMap = {
+  'onTime': 0,
+  'fiveMinutes': 1,
+  'tenMinutes': 2,
+  'oneHour': 3,
+  'atSpecificTime': 4,
+  'atSpecificTimeAndDate': 5,
+};
+const _ReminderDtotypeValueEnumMap = {
+  0: ReminderType.onTime,
+  1: ReminderType.fiveMinutes,
+  2: ReminderType.tenMinutes,
+  3: ReminderType.oneHour,
+  4: ReminderType.atSpecificTime,
+  5: ReminderType.atSpecificTimeAndDate,
+};
 
 extension ReminderDtoQueryFilter
     on QueryBuilder<ReminderDto, ReminderDto, QFilterCondition> {
@@ -133,6 +162,59 @@ extension ReminderDtoQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'date',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ReminderDto, ReminderDto, QAfterFilterCondition> typeEqualTo(
+      ReminderType value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'type',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ReminderDto, ReminderDto, QAfterFilterCondition> typeGreaterThan(
+    ReminderType value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'type',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ReminderDto, ReminderDto, QAfterFilterCondition> typeLessThan(
+    ReminderType value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'type',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ReminderDto, ReminderDto, QAfterFilterCondition> typeBetween(
+    ReminderType lower,
+    ReminderType upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'type',
         lower: lower,
         includeLower: includeLower,
         upper: upper,

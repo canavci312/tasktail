@@ -86,6 +86,7 @@ class AddEditTaskCubit extends Cubit<AddEditTaskState> {
       title: state.title,
       description: state.description,
       dueDate: state.dueDate,
+      isNote: task?.isNote ?? false,
       priority: state.priority ?? Priority.noPriority,
       project: state.project,
       tags: state.tags,

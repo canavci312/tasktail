@@ -5,13 +5,16 @@ import 'package:task_app/domain/repositories/models/task.dart';
 class TaskRepository {
   TaskRepository({required this.localProvider});
   final Isar localProvider;
-  Stream<List<Task>> listenTasks(){
+  Stream<List<Task>> listenTasks() {
     return localProvider
         .collection<TaskDto>()
-        .buildQuery<TaskDto>()
+        .buildQuery<TaskDto>(
+          sortBy: [const SortProperty(property: 'dueDate', sort: Sort.asc)],
+        )
         .watch(fireImmediately: true)
         .map((event) => event.map((e) => e.toDomainModel()).toList());
   }
+
   List<TaskDto> getTasks() {
     return localProvider
         .collection<TaskDto>()

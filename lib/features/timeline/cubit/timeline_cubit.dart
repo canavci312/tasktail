@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:table_calendar/src/shared/utils.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:task_app/data/repositories/task_repository.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
 import 'package:task_app/utils/date_utils.dart';
