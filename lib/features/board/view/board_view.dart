@@ -79,8 +79,8 @@ class BoardView extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8),
                                 child: FilterChip(
-                                  label: Row(
-                                    children: const [
+                                  label: const Row(
+                                    children: [
                                       Icon(Icons.reorder_outlined),
                                       SizedBox(
                                         width: 4,

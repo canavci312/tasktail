@@ -4,14 +4,17 @@ version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
-
+  sdk: ">=3.0.0 <4.0.0"
+dependency_overrides: 
+  intl: ^0.18.0
 dependencies:
   auto_route: ^6.1.0
   awesome_notifications: ^0.7.4+1
   bloc: ^8.1.1
   calendar_time: ^2.2.0
-  dart_date: ^1.2.1
+  dart_date:
+    git:
+      url: https://github.com/spaznuski/dart_date.git
   equatable: ^2.0.5
   flutter:
     sdk: flutter
@@ -24,7 +27,7 @@ dependencies:
   freezed_annotation: any
   get_it: ^7.2.0
   hive: ^2.2.3
-  intl: ^0.17.0
+  intl: ^0.18.0
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0
   json_annotation: any
@@ -33,7 +36,7 @@ dependencies:
   path_provider: ^2.0.14
   scroll_to_index: ^3.0.1
   scrollable_positioned_list: ^0.3.6
-  table_calendar: ^3.0.8
+  table_calendar: ^3.0.9
   timelines: ^0.1.0
   uuid: ^3.0.7
   visibility_detector: ^0.4.0+2
