@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:task_app/data/repositories/project_repository.dart';
+import 'package:task_app/data/repositories/task_repository.dart';
 import 'package:task_app/domain/repositories/models/project.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
 import 'package:task_app/utils/extensions/list_extensions.dart';
@@ -9,8 +10,10 @@ part 'board_state.dart';
 part 'board_cubit.freezed.dart';
 
 class BoardCubit extends Cubit<BoardState> {
-  BoardCubit(this.projectRepository) : super(const BoardState(projects: []));
+  BoardCubit(this.projectRepository, this.taskRepository)
+      : super(const BoardState(projects: [],tasks: []));
   final ProjectRepository projectRepository;
+  final TaskRepository taskRepository;
   void listenProjects() {
     projectRepository.listenAllProjects().listen((event) {
       emit(
@@ -22,7 +25,11 @@ class BoardCubit extends Cubit<BoardState> {
   }
 
   void changeSelectedProject(Project? item) {
-    emit(state.copyWith(selectedProject: item));
+    var tasks = <Task>[];
+    if (item != null) {
+      tasks = taskRepository.getTasksByProjectId(item.id!);
+    }
+    emit(state.copyWith(selectedProject: item,tasks: tasks));
   }
 
   void reorderProjects(int index, int index2) {

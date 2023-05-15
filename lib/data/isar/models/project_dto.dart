@@ -1,5 +1,4 @@
 import 'package:isar/isar.dart';
-import 'package:task_app/data/isar/models/task_dto.dart';
 import 'package:task_app/domain/repositories/models/project.dart';
 import 'package:task_app/domain/repositories/models/sort_by.dart';
 import 'package:task_app/domain/repositories/models/tag.dart';
@@ -29,7 +28,6 @@ class ProjectDto {
   }
   Id? id;
   final String title;
-  final tasks = IsarLinks<TaskDto>();
   @enumerated
   final TagColor color;
   @enumerated
@@ -46,7 +44,6 @@ class ProjectDto {
       createdOn: createdOn,
       sortyBy: sortyBy,
       archived: archived,
-      tasks: tasks.map((e) => e.toDomainModel()).toList(),
       color: color,
       updatedOn: updatedOn,
     );

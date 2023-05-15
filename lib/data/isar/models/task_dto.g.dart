@@ -79,11 +79,10 @@ const TaskDtoSchema = CollectionSchema(
   indexes: {},
   links: {
     r'project': LinkSchema(
-      id: -5544857732313267848,
+      id: -760299853674037609,
       name: r'project',
       target: r'ProjectDto',
       single: true,
-      linkName: r'tasks',
     ),
     r'tags': LinkSchema(
       id: -190540103352104866,

@@ -56,14 +56,7 @@ const ProjectDtoSchema = CollectionSchema(
   deserializeProp: _projectDtoDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {
-    r'tasks': LinkSchema(
-      id: 6367050651973297040,
-      name: r'tasks',
-      target: r'TaskDto',
-      single: false,
-    )
-  },
+  links: {},
   embeddedSchemas: {},
   getId: _projectDtoGetId,
   getLinks: _projectDtoGetLinks,
@@ -206,12 +199,11 @@ Id _projectDtoGetId(ProjectDto object) {
 }
 
 List<IsarLinkBase<dynamic>> _projectDtoGetLinks(ProjectDto object) {
-  return [object.tasks];
+  return [];
 }
 
 void _projectDtoAttach(IsarCollection<dynamic> col, Id id, ProjectDto object) {
   object.id = id;
-  object.tasks.attach(col, col.isar.collection<TaskDto>(), r'tasks', id);
 }
 
 extension ProjectDtoQueryWhereSort
@@ -741,67 +733,7 @@ extension ProjectDtoQueryObject
     on QueryBuilder<ProjectDto, ProjectDto, QFilterCondition> {}
 
 extension ProjectDtoQueryLinks
-    on QueryBuilder<ProjectDto, ProjectDto, QFilterCondition> {
-  QueryBuilder<ProjectDto, ProjectDto, QAfterFilterCondition> tasks(
-      FilterQuery<TaskDto> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'tasks');
-    });
-  }
-
-  QueryBuilder<ProjectDto, ProjectDto, QAfterFilterCondition>
-      tasksLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tasks', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<ProjectDto, ProjectDto, QAfterFilterCondition> tasksIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tasks', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<ProjectDto, ProjectDto, QAfterFilterCondition>
-      tasksIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tasks', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<ProjectDto, ProjectDto, QAfterFilterCondition>
-      tasksLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tasks', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<ProjectDto, ProjectDto, QAfterFilterCondition>
-      tasksLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tasks', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<ProjectDto, ProjectDto, QAfterFilterCondition>
-      tasksLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.linkLength(
-          r'tasks', lower, includeLower, upper, includeUpper);
-    });
-  }
-}
+    on QueryBuilder<ProjectDto, ProjectDto, QFilterCondition> {}
 
 extension ProjectDtoQuerySortBy
     on QueryBuilder<ProjectDto, ProjectDto, QSortBy> {

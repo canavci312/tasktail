@@ -16,7 +16,7 @@ class BoardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BoardCubit(getIt())..listenProjects(),
+      create: (context) => BoardCubit(getIt(),getIt())..listenProjects(),
       child: const BoardView(),
     );
   }

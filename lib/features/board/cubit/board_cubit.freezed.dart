@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$BoardState {
   List<Project> get projects => throw _privateConstructorUsedError;
+  List<Task> get tasks => throw _privateConstructorUsedError;
   Project? get selectedProject => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -30,7 +31,8 @@ abstract class $BoardStateCopyWith<$Res> {
           BoardState value, $Res Function(BoardState) then) =
       _$BoardStateCopyWithImpl<$Res, BoardState>;
   @useResult
-  $Res call({List<Project> projects, Project? selectedProject});
+  $Res call(
+      {List<Project> projects, List<Task> tasks, Project? selectedProject});
 
   $ProjectCopyWith<$Res>? get selectedProject;
 }
@@ -49,6 +51,7 @@ class _$BoardStateCopyWithImpl<$Res, $Val extends BoardState>
   @override
   $Res call({
     Object? projects = null,
+    Object? tasks = null,
     Object? selectedProject = freezed,
   }) {
     return _then(_value.copyWith(
@@ -56,6 +59,10 @@ class _$BoardStateCopyWithImpl<$Res, $Val extends BoardState>
           ? _value.projects
           : projects // ignore: cast_nullable_to_non_nullable
               as List<Project>,
+      tasks: null == tasks
+          ? _value.tasks
+          : tasks // ignore: cast_nullable_to_non_nullable
+              as List<Task>,
       selectedProject: freezed == selectedProject
           ? _value.selectedProject
           : selectedProject // ignore: cast_nullable_to_non_nullable
@@ -84,7 +91,8 @@ abstract class _$$_BoardStateCopyWith<$Res>
       __$$_BoardStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<Project> projects, Project? selectedProject});
+  $Res call(
+      {List<Project> projects, List<Task> tasks, Project? selectedProject});
 
   @override
   $ProjectCopyWith<$Res>? get selectedProject;
@@ -102,6 +110,7 @@ class __$$_BoardStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? projects = null,
+    Object? tasks = null,
     Object? selectedProject = freezed,
   }) {
     return _then(_$_BoardState(
@@ -109,6 +118,10 @@ class __$$_BoardStateCopyWithImpl<$Res>
           ? _value._projects
           : projects // ignore: cast_nullable_to_non_nullable
               as List<Project>,
+      tasks: null == tasks
+          ? _value._tasks
+          : tasks // ignore: cast_nullable_to_non_nullable
+              as List<Task>,
       selectedProject: freezed == selectedProject
           ? _value.selectedProject
           : selectedProject // ignore: cast_nullable_to_non_nullable
@@ -121,8 +134,11 @@ class __$$_BoardStateCopyWithImpl<$Res>
 
 class _$_BoardState implements _BoardState {
   const _$_BoardState(
-      {required final List<Project> projects, this.selectedProject})
-      : _projects = projects;
+      {required final List<Project> projects,
+      required final List<Task> tasks,
+      this.selectedProject})
+      : _projects = projects,
+        _tasks = tasks;
 
   final List<Project> _projects;
   @override
@@ -132,12 +148,20 @@ class _$_BoardState implements _BoardState {
     return EqualUnmodifiableListView(_projects);
   }
 
+  final List<Task> _tasks;
+  @override
+  List<Task> get tasks {
+    if (_tasks is EqualUnmodifiableListView) return _tasks;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_tasks);
+  }
+
   @override
   final Project? selectedProject;
 
   @override
   String toString() {
-    return 'BoardState(projects: $projects, selectedProject: $selectedProject)';
+    return 'BoardState(projects: $projects, tasks: $tasks, selectedProject: $selectedProject)';
   }
 
   @override
@@ -146,13 +170,17 @@ class _$_BoardState implements _BoardState {
         (other.runtimeType == runtimeType &&
             other is _$_BoardState &&
             const DeepCollectionEquality().equals(other._projects, _projects) &&
+            const DeepCollectionEquality().equals(other._tasks, _tasks) &&
             (identical(other.selectedProject, selectedProject) ||
                 other.selectedProject == selectedProject));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_projects), selectedProject);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_projects),
+      const DeepCollectionEquality().hash(_tasks),
+      selectedProject);
 
   @JsonKey(ignore: true)
   @override
@@ -164,10 +192,13 @@ class _$_BoardState implements _BoardState {
 abstract class _BoardState implements BoardState {
   const factory _BoardState(
       {required final List<Project> projects,
+      required final List<Task> tasks,
       final Project? selectedProject}) = _$_BoardState;
 
   @override
   List<Project> get projects;
+  @override
+  List<Task> get tasks;
   @override
   Project? get selectedProject;
   @override

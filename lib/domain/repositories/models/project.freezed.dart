@@ -18,7 +18,6 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$Project {
   String get title => throw _privateConstructorUsedError;
   int? get id => throw _privateConstructorUsedError;
-  List<Task>? get tasks => throw _privateConstructorUsedError;
   SortBy get sortyBy => throw _privateConstructorUsedError;
   TagColor get color => throw _privateConstructorUsedError;
   bool get archived => throw _privateConstructorUsedError;
@@ -37,7 +36,6 @@ abstract class $ProjectCopyWith<$Res> {
   $Res call(
       {String title,
       int? id,
-      List<Task>? tasks,
       SortBy sortyBy,
       TagColor color,
       bool archived,
@@ -60,7 +58,6 @@ class _$ProjectCopyWithImpl<$Res, $Val extends Project>
   $Res call({
     Object? title = null,
     Object? id = freezed,
-    Object? tasks = freezed,
     Object? sortyBy = null,
     Object? color = null,
     Object? archived = null,
@@ -76,10 +73,6 @@ class _$ProjectCopyWithImpl<$Res, $Val extends Project>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      tasks: freezed == tasks
-          ? _value.tasks
-          : tasks // ignore: cast_nullable_to_non_nullable
-              as List<Task>?,
       sortyBy: null == sortyBy
           ? _value.sortyBy
           : sortyBy // ignore: cast_nullable_to_non_nullable
@@ -114,7 +107,6 @@ abstract class _$$_ProjectCopyWith<$Res> implements $ProjectCopyWith<$Res> {
   $Res call(
       {String title,
       int? id,
-      List<Task>? tasks,
       SortBy sortyBy,
       TagColor color,
       bool archived,
@@ -134,7 +126,6 @@ class __$$_ProjectCopyWithImpl<$Res>
   $Res call({
     Object? title = null,
     Object? id = freezed,
-    Object? tasks = freezed,
     Object? sortyBy = null,
     Object? color = null,
     Object? archived = null,
@@ -150,10 +141,6 @@ class __$$_ProjectCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      tasks: freezed == tasks
-          ? _value._tasks
-          : tasks // ignore: cast_nullable_to_non_nullable
-              as List<Task>?,
       sortyBy: null == sortyBy
           ? _value.sortyBy
           : sortyBy // ignore: cast_nullable_to_non_nullable
@@ -184,28 +171,16 @@ class _$_Project implements _Project {
   const _$_Project(
       {required this.title,
       this.id,
-      final List<Task>? tasks,
       this.sortyBy = SortBy.createdDateAsc,
       this.color = TagColor.noColor,
       this.archived = false,
       this.createdOn,
-      this.updatedOn})
-      : _tasks = tasks;
+      this.updatedOn});
 
   @override
   final String title;
   @override
   final int? id;
-  final List<Task>? _tasks;
-  @override
-  List<Task>? get tasks {
-    final value = _tasks;
-    if (value == null) return null;
-    if (_tasks is EqualUnmodifiableListView) return _tasks;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
   @override
   @JsonKey()
   final SortBy sortyBy;
@@ -222,7 +197,7 @@ class _$_Project implements _Project {
 
   @override
   String toString() {
-    return 'Project(title: $title, id: $id, tasks: $tasks, sortyBy: $sortyBy, color: $color, archived: $archived, createdOn: $createdOn, updatedOn: $updatedOn)';
+    return 'Project(title: $title, id: $id, sortyBy: $sortyBy, color: $color, archived: $archived, createdOn: $createdOn, updatedOn: $updatedOn)';
   }
 
   @override
@@ -232,7 +207,6 @@ class _$_Project implements _Project {
             other is _$_Project &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.id, id) || other.id == id) &&
-            const DeepCollectionEquality().equals(other._tasks, _tasks) &&
             (identical(other.sortyBy, sortyBy) || other.sortyBy == sortyBy) &&
             (identical(other.color, color) || other.color == color) &&
             (identical(other.archived, archived) ||
@@ -245,15 +219,7 @@ class _$_Project implements _Project {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      title,
-      id,
-      const DeepCollectionEquality().hash(_tasks),
-      sortyBy,
-      color,
-      archived,
-      createdOn,
-      updatedOn);
+      runtimeType, title, id, sortyBy, color, archived, createdOn, updatedOn);
 
   @JsonKey(ignore: true)
   @override
@@ -266,7 +232,6 @@ abstract class _Project implements Project {
   const factory _Project(
       {required final String title,
       final int? id,
-      final List<Task>? tasks,
       final SortBy sortyBy,
       final TagColor color,
       final bool archived,
@@ -277,8 +242,6 @@ abstract class _Project implements Project {
   String get title;
   @override
   int? get id;
-  @override
-  List<Task>? get tasks;
   @override
   SortBy get sortyBy;
   @override

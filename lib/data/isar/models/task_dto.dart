@@ -53,7 +53,6 @@ class TaskDto {
   final DateTime? dueDate;
   @enumerated
   final Priority priority;
-  @Backlink(to: 'tasks')
   final project = IsarLink<ProjectDto>();
   final tags = IsarLinks<TagDto>();
   final List<CheckListItemDto>? checklist;

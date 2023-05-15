@@ -29,7 +29,7 @@ class BoardView extends StatelessWidget {
 
         return Scaffold(
           floatingActionButtonLocation: ExpandableFab.location,
-          floatingActionButton: AppExpandableFab(selectedDate:DateTime.now()),
+          floatingActionButton: AppExpandableFab(selectedDate: DateTime.now()),
           appBar: AppBar(
             title: const Text('Board'),
             actions: [
@@ -179,8 +179,7 @@ class BoardView extends StatelessWidget {
                       else
                         const SizedBox(),
                       if (state.selectedProject != null &&
-                          state.selectedProject!.tasks != null &&
-                          state.selectedProject!.tasks!.isNotEmpty) ...[
+                          state.tasks.isNotEmpty) ...[
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Row(
@@ -188,11 +187,10 @@ class BoardView extends StatelessWidget {
                               Expanded(
                                 child: LinearProgressIndicator(
                                   minHeight: 8,
-                                  value: state.selectedProject!.tasks!
-                                          .where((element) {
+                                  value: state.tasks.where((element) {
                                         return element.isCompleted;
                                       }).length /
-                                      state.selectedProject!.tasks!.length,
+                                      state.tasks.length,
                                 ),
                               ),
                               const SizedBox(
@@ -201,9 +199,9 @@ class BoardView extends StatelessWidget {
                               //calculate % completed
 
                               Text(
-                                '${state.selectedProject!.tasks!.where((element) {
+                                '${state.tasks.where((element) {
                                   return element.isCompleted;
-                                }).length} / ${state.selectedProject!.tasks!.length}',
+                                }).length} / ${state.tasks.length}',
                               ),
                               const Icon(Icons.chevron_right_outlined)
                             ],
@@ -211,7 +209,7 @@ class BoardView extends StatelessWidget {
                         ),
                         Flexible(
                           child: ListView.separated(
-                            itemCount: state.selectedProject!.tasks!.length,
+                            itemCount: state.tasks.length,
                             separatorBuilder:
                                 (BuildContext context, int index) {
                               return const Divider(
@@ -220,11 +218,10 @@ class BoardView extends StatelessWidget {
                               );
                             },
                             itemBuilder: (BuildContext context, int index) {
-                              final task = state.selectedProject!.tasks![index];
+                              final task = state.tasks[index];
                               return CheckboxListTile(
                                 checkboxShape: const CircleBorder(),
-                                value: state
-                                    .selectedProject!.tasks![index].isCompleted,
+                                value: state.tasks[index].isCompleted,
                                 onChanged: (bool? value) {
                                   cubit.toggleTask(
                                     task,

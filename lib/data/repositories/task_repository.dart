@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:task_app/data/isar/models/project_dto.dart';
 import 'package:task_app/data/isar/models/task_dto.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
 
@@ -13,6 +14,16 @@ class TaskRepository {
         )
         .watch(fireImmediately: true)
         .map((event) => event.map((e) => e.toDomainModel()).toList());
+  }
+
+  List<Task> getTasksByProjectId(int id) {
+    return localProvider
+        .collection<TaskDto>()
+        .filter()
+        .project((q) => q.idEqualTo(id))
+        .findAllSync()
+        .map((e) => e.toDomainModel())
+        .toList();
   }
 
   List<TaskDto> getTasks() {
