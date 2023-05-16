@@ -491,7 +491,7 @@ class TaskTile extends StatelessWidget {
               ],
             ),
           ),
-          Wrap(
+          Row(
             children: [
               Visibility(
                 visible: task.dueDate != null,
