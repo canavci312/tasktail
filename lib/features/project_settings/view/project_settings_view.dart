@@ -90,9 +90,7 @@ class _ProjectSettingsViewState extends State<ProjectSettingsView> {
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(Icons.drive_file_move_outlined),
                   title: const Text('Move all items'),
-                  onTap: () {
-                    cubit.deleteProject();
-                  },
+                  onTap: () {},
                 ),
                 const Divider(),
                 ListTile(
@@ -139,7 +137,6 @@ class _ProjectSettingsViewState extends State<ProjectSettingsView> {
                             ),
                             TextButton(
                               onPressed: () {
-                                cubit.archiveProject();
                                 Navigator.pop(context, true);
                               },
                               child: const Text('Archive'),
@@ -168,7 +165,7 @@ class _ProjectSettingsViewState extends State<ProjectSettingsView> {
                       builder: (context) => AlertDialog(
                         title: const Text('Delete project'),
                         content: const Text(
-                          'You will still be able to access items in this project and you can unarchive it later.',
+                          'You are deleting the project. Do you want to keep tasks in this project?',
                         ),
                         actions: [
                           TextButton(
@@ -177,16 +174,25 @@ class _ProjectSettingsViewState extends State<ProjectSettingsView> {
                           ),
                           TextButton(
                             onPressed: () {
-                              cubit.archiveProject();
+                              Navigator.pop(context, false);
+                            },
+                            child: const Text('Keep tasks'),
+                          ),
+                          TextButton(
+                            onPressed: () {
                               Navigator.pop(context, true);
                             },
-                            child: const Text('Delete'),
+                            child: const Text('Delete tasks'),
                           ),
                         ],
                       ),
                     );
-                    if (result ?? false == true) {
-                      cubit.deleteProject();
+                    if (result == null) {
+                      return;
+                    }
+                    cubit.deleteProject(deleteTasks: result);
+                    if (context.mounted) {
+                      Navigator.pop(context);
                     }
                   },
                 ),

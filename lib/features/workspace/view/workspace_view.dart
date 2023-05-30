@@ -33,13 +33,60 @@ class WorkspaceView extends StatelessWidget {
                   children: [
                     Switch.adaptive(
                       value: state.isCalendarImportOpen,
-                      onChanged: (value) {
-                        cubit.toggleCalendarImport();
+                      onChanged: (value) async {
+                        if (value) {
+                          cubit.toggleCalendarImport(value,null);
+                        } else {
+                          final result = await showDialog<bool?>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Canceling Calendar Import'),
+                              content: const Text(
+                                'Do you want to keep the tasks created from the calendar?',
+                              ),
+                              actionsAlignment: MainAxisAlignment.end,
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: const Text('No'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (result == null) {
+                            return;
+                          }
+                          else{
+                            cubit.toggleCalendarImport(false,result);
+                          }
+                        }
                       },
                     ),
-                    Icon(
-                      Icons.info_outline,
-                      color: Theme.of(context).colorScheme.outline,
+                    IconButton(
+                      onPressed: () => showDialog<void>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Import Calendar'),
+                          content: const Text(
+                            'Takes the next 30 days from your calendar and creates tasks from them. Events are syncronised time to time.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
                     ),
                   ],
                 ),

@@ -20,6 +20,7 @@ class Task with _$Task {
     @Default(Priority.noPriority) Priority priority,
     Project? project,
     @Default(false) bool fromCalendar,
+    String? calendarId,
     List<Tag>? tags,
     List<CheckListItem>? checklist,
     DateTime? createdOn,

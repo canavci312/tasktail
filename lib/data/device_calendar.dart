@@ -30,6 +30,8 @@ class DeviceCalendarService {
             title: element.title,
             dueDate: element.start,
             description: element.description,
+            calendarId: element.eventId,
+            fromCalendar: true,
           ),
         );
       });

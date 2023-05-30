@@ -14,8 +14,8 @@ class ProjectSettingsCubit extends Cubit<ProjectSettingsState> {
   final Project project;
   final ProjectRepository repository;
 
-  void deleteProject() {
-    repository.deleteProject(project.id!);
+  void deleteProject({required bool deleteTasks}) {
+    repository.deleteProject(project.id!, deleteTasks: deleteTasks);
   }
 
   void changeSortby(SortBy sortBy) {

@@ -1,6 +1,7 @@
 import 'package:dart_date/dart_date.dart';
 import 'package:isar/isar.dart';
 import 'package:task_app/data/awesome_notification_service.dart';
+import 'package:task_app/data/device_calendar.dart';
 import 'package:task_app/data/isar/models/project_dto.dart';
 import 'package:task_app/data/isar/models/tag_dto.dart';
 import 'package:task_app/data/isar/models/task_dto.dart';
@@ -10,11 +11,13 @@ class TaskRepository {
   TaskRepository({
     required this.awesomeNotificationService,
     required this.localProvider,
+    required this.deviceCalendarService,
   }) {
     listenForReminders();
   }
   final AwesomeNotificationService awesomeNotificationService;
   final Isar localProvider;
+  final DeviceCalendarService deviceCalendarService;
   Stream<List<Task>> listenTasks() {
     return localProvider
         .collection<TaskDto>()
@@ -23,6 +26,15 @@ class TaskRepository {
         )
         .watch(fireImmediately: true)
         .map((event) => event.map((e) => e.toDomainModel()).toList());
+  }
+
+  Future<void> importTasksFromCalendar() async {
+    final tasks = await deviceCalendarService.getCalendarEvents();
+    if (tasks != null) {
+      for (final task in tasks) {
+        await insertTask(task);
+      }
+    }
   }
 
   Stream<List<Task>> listenOverdueTasks() {
@@ -145,6 +157,17 @@ class TaskRepository {
   Future<bool> deleteTask(int id) async {
     return localProvider.writeTxnSync(
       () => localProvider.collection<TaskDto>().deleteSync(id),
+    );
+  }
+
+  Future<void> deleteCalendarTasks() async {
+    await localProvider.writeTxn(
+      () => localProvider
+          .collection<TaskDto>()
+          .filter()
+          .fromCalendarEqualTo(true)
+          .build()
+          .deleteAll(),
     );
   }
 }

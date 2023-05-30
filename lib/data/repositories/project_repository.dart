@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:task_app/data/isar/models/project_dto.dart';
+import 'package:task_app/data/isar/models/task_dto.dart';
 import 'package:task_app/domain/repositories/models/project.dart';
 
 class ProjectRepository {
@@ -42,9 +43,20 @@ class ProjectRepository {
     );
   }
 
-  Future<void> deleteProject(int id) async {
-    return isar
-        .writeTxnSync(() => isar.collection<ProjectDto>().deleteSync(id));
+  Future<void> deleteProject(int id, {required bool deleteTasks}) async {
+    if (deleteTasks) {
+      await isar.writeTxnSync(() async {
+        isar
+            .collection<TaskDto>()
+            .filter()
+            .project((q) => q.idEqualTo(id))
+            .build()
+            .deleteAllSync();
+        isar.collection<ProjectDto>().deleteSync(id);
+      });
+    } else {
+      isar.writeTxnSync(() => isar.collection<ProjectDto>().deleteSync(id));
+    }
   }
 
   //update project
@@ -55,5 +67,4 @@ class ProjectRepository {
           .putSync(ProjectDto.fromDomainModel(project)),
     );
   }
-
 }

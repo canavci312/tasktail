@@ -2,10 +2,12 @@ import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:task_app/data/awesome_notification_service.dart';
+import 'package:task_app/data/device_calendar.dart';
 import 'package:task_app/data/isar/models/project_dto.dart';
 import 'package:task_app/data/isar/models/tag_dto.dart';
 import 'package:task_app/data/isar/models/task_dto.dart';
 import 'package:task_app/data/repositories/project_repository.dart';
+import 'package:task_app/data/repositories/settings_repository.dart';
 import 'package:task_app/data/repositories/tag_repository.dart';
 import 'package:task_app/data/repositories/task_repository.dart';
 import 'package:task_app/navigation/router.dart';
@@ -19,16 +21,21 @@ Future<void> setup() async {
     [TaskDtoSchema, ProjectDtoSchema, TagDtoSchema],
     directory: dir.path,
   );
-  
-
   getIt
+    ..registerSingleton<SettingsRepository>(
+      SettingsRepository(),
+    )
     ..registerSingleton<AwesomeNotificationService>(
       AwesomeNotificationService(),
+    )
+    ..registerSingleton<DeviceCalendarService>(
+      DeviceCalendarService()..init(),
     )
     ..registerSingleton<TaskRepository>(
       TaskRepository(
         localProvider: isar,
         awesomeNotificationService: getIt(),
+        deviceCalendarService: getIt(),
       ),
     )
     ..registerSingleton<TagRepository>(

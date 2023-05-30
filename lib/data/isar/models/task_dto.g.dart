@@ -17,61 +17,66 @@ const TaskDtoSchema = CollectionSchema(
   name: r'TaskDto',
   id: 2894101181193919401,
   properties: {
-    r'checklist': PropertySchema(
+    r'calendarId': PropertySchema(
       id: 0,
+      name: r'calendarId',
+      type: IsarType.string,
+    ),
+    r'checklist': PropertySchema(
+      id: 1,
       name: r'checklist',
       type: IsarType.objectList,
       target: r'CheckListItemDto',
     ),
     r'createdOn': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'createdOn',
       type: IsarType.dateTime,
     ),
     r'description': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'description',
       type: IsarType.string,
     ),
     r'dueDate': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'dueDate',
       type: IsarType.dateTime,
     ),
     r'fromCalendar': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'fromCalendar',
       type: IsarType.bool,
     ),
     r'isCompleted': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'isCompleted',
       type: IsarType.bool,
     ),
     r'isNote': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'isNote',
       type: IsarType.bool,
     ),
     r'priority': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'priority',
       type: IsarType.byte,
       enumMap: _TaskDtopriorityEnumValueMap,
     ),
     r'reminders': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'reminders',
       type: IsarType.objectList,
       target: r'ReminderDto',
     ),
     r'title': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'title',
       type: IsarType.string,
     ),
     r'updatedOn': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'updatedOn',
       type: IsarType.dateTime,
     )
@@ -113,6 +118,12 @@ int _taskDtoEstimateSize(
 ) {
   var bytesCount = offsets.last;
   {
+    final value = object.calendarId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final list = object.checklist;
     if (list != null) {
       bytesCount += 3 + list.length * 3;
@@ -150,27 +161,28 @@ void _taskDtoSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
+  writer.writeString(offsets[0], object.calendarId);
   writer.writeObjectList<CheckListItemDto>(
-    offsets[0],
+    offsets[1],
     allOffsets,
     CheckListItemDtoSchema.serialize,
     object.checklist,
   );
-  writer.writeDateTime(offsets[1], object.createdOn);
-  writer.writeString(offsets[2], object.description);
-  writer.writeDateTime(offsets[3], object.dueDate);
-  writer.writeBool(offsets[4], object.fromCalendar);
-  writer.writeBool(offsets[5], object.isCompleted);
-  writer.writeBool(offsets[6], object.isNote);
-  writer.writeByte(offsets[7], object.priority.index);
+  writer.writeDateTime(offsets[2], object.createdOn);
+  writer.writeString(offsets[3], object.description);
+  writer.writeDateTime(offsets[4], object.dueDate);
+  writer.writeBool(offsets[5], object.fromCalendar);
+  writer.writeBool(offsets[6], object.isCompleted);
+  writer.writeBool(offsets[7], object.isNote);
+  writer.writeByte(offsets[8], object.priority.index);
   writer.writeObjectList<ReminderDto>(
-    offsets[8],
+    offsets[9],
     allOffsets,
     ReminderDtoSchema.serialize,
     object.reminders,
   );
-  writer.writeString(offsets[9], object.title);
-  writer.writeDateTime(offsets[10], object.updatedOn);
+  writer.writeString(offsets[10], object.title);
+  writer.writeDateTime(offsets[11], object.updatedOn);
 }
 
 TaskDto _taskDtoDeserialize(
@@ -180,30 +192,31 @@ TaskDto _taskDtoDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = TaskDto(
+    calendarId: reader.readStringOrNull(offsets[0]),
     checklist: reader.readObjectList<CheckListItemDto>(
-      offsets[0],
+      offsets[1],
       CheckListItemDtoSchema.deserialize,
       allOffsets,
       CheckListItemDto(),
     ),
-    createdOn: reader.readDateTimeOrNull(offsets[1]),
-    description: reader.readStringOrNull(offsets[2]),
-    dueDate: reader.readDateTimeOrNull(offsets[3]),
-    fromCalendar: reader.readBoolOrNull(offsets[4]) ?? false,
+    createdOn: reader.readDateTimeOrNull(offsets[2]),
+    description: reader.readStringOrNull(offsets[3]),
+    dueDate: reader.readDateTimeOrNull(offsets[4]),
+    fromCalendar: reader.readBoolOrNull(offsets[5]) ?? false,
     id: id,
-    isCompleted: reader.readBoolOrNull(offsets[5]) ?? false,
-    isNote: reader.readBoolOrNull(offsets[6]) ?? false,
-    priority: _TaskDtopriorityValueEnumMap[reader.readByteOrNull(offsets[7])] ??
+    isCompleted: reader.readBoolOrNull(offsets[6]) ?? false,
+    isNote: reader.readBoolOrNull(offsets[7]) ?? false,
+    priority: _TaskDtopriorityValueEnumMap[reader.readByteOrNull(offsets[8])] ??
         Priority.noPriority,
     reminders: reader.readObjectList<ReminderDto>(
-          offsets[8],
+          offsets[9],
           ReminderDtoSchema.deserialize,
           allOffsets,
           ReminderDto(),
         ) ??
         const [],
-    title: reader.readString(offsets[9]),
-    updatedOn: reader.readDateTimeOrNull(offsets[10]),
+    title: reader.readString(offsets[10]),
+    updatedOn: reader.readDateTimeOrNull(offsets[11]),
   );
   return object;
 }
@@ -216,28 +229,30 @@ P _taskDtoDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readStringOrNull(offset)) as P;
+    case 1:
       return (reader.readObjectList<CheckListItemDto>(
         offset,
         CheckListItemDtoSchema.deserialize,
         allOffsets,
         CheckListItemDto(),
       )) as P;
-    case 1:
-      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
-    case 3:
       return (reader.readDateTimeOrNull(offset)) as P;
+    case 3:
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 5:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 6:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 7:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 8:
       return (_TaskDtopriorityValueEnumMap[reader.readByteOrNull(offset)] ??
           Priority.noPriority) as P;
-    case 8:
+    case 9:
       return (reader.readObjectList<ReminderDto>(
             offset,
             ReminderDtoSchema.deserialize,
@@ -245,9 +260,9 @@ P _taskDtoDeserializeProp<P>(
             ReminderDto(),
           ) ??
           const []) as P;
-    case 9:
-      return (reader.readString(offset)) as P;
     case 10:
+      return (reader.readString(offset)) as P;
+    case 11:
       return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -360,6 +375,152 @@ extension TaskDtoQueryWhere on QueryBuilder<TaskDto, TaskDto, QWhereClause> {
 
 extension TaskDtoQueryFilter
     on QueryBuilder<TaskDto, TaskDto, QFilterCondition> {
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'calendarId',
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'calendarId',
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'calendarId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'calendarId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'calendarId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'calendarId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'calendarId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'calendarId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'calendarId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'calendarId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'calendarId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> calendarIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'calendarId',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<TaskDto, TaskDto, QAfterFilterCondition> checklistIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1272,6 +1433,18 @@ extension TaskDtoQueryLinks
 }
 
 extension TaskDtoQuerySortBy on QueryBuilder<TaskDto, TaskDto, QSortBy> {
+  QueryBuilder<TaskDto, TaskDto, QAfterSortBy> sortByCalendarId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'calendarId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterSortBy> sortByCalendarIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'calendarId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskDto, TaskDto, QAfterSortBy> sortByCreatedOn() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdOn', Sort.asc);
@@ -1383,6 +1556,18 @@ extension TaskDtoQuerySortBy on QueryBuilder<TaskDto, TaskDto, QSortBy> {
 
 extension TaskDtoQuerySortThenBy
     on QueryBuilder<TaskDto, TaskDto, QSortThenBy> {
+  QueryBuilder<TaskDto, TaskDto, QAfterSortBy> thenByCalendarId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'calendarId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TaskDto, TaskDto, QAfterSortBy> thenByCalendarIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'calendarId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TaskDto, TaskDto, QAfterSortBy> thenByCreatedOn() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdOn', Sort.asc);
@@ -1506,6 +1691,13 @@ extension TaskDtoQuerySortThenBy
 
 extension TaskDtoQueryWhereDistinct
     on QueryBuilder<TaskDto, TaskDto, QDistinct> {
+  QueryBuilder<TaskDto, TaskDto, QDistinct> distinctByCalendarId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'calendarId', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<TaskDto, TaskDto, QDistinct> distinctByCreatedOn() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createdOn');
@@ -1568,6 +1760,12 @@ extension TaskDtoQueryProperty
   QueryBuilder<TaskDto, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<TaskDto, String?, QQueryOperations> calendarIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'calendarId');
     });
   }
 
