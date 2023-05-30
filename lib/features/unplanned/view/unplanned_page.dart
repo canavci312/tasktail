@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:task_app/features/unplanned/unplanned.dart';
 import 'package:task_app/features/unplanned/view/unplanned_view.dart';
+import 'package:task_app/locator.dart';
 @RoutePage() 
 class UnplannedPage extends StatelessWidget {
   const UnplannedPage({
@@ -14,7 +15,7 @@ class UnplannedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => UnplannedCubit(),
+      create: (context) => UnplannedCubit(getIt())..listenUnplannedTasks(),
       child: const UnplannedView(),
     );
   }

@@ -17,12 +17,20 @@ class TimelineCubit extends Cubit<TimelineState> {
             viewMode: ViewMode.timeline,
             searchedTasks: [],
             selectedDate: DateTime.now(),
+            unplannedTasksCount: 0,
+            overdueCount: 0,
           ),
         );
   final TaskRepository _taskRepository;
   void listenTasks() {
     _taskRepository.listenTasks().listen((event) {
-      emit(state.copyWith(tasks: event));
+      emit(
+        state.copyWith(
+          tasks: event,
+          unplannedTasksCount: event.unplannedTasks.length,
+          overdueCount: event.overdueTasks.length,
+        ),
+      );
     });
   }
 

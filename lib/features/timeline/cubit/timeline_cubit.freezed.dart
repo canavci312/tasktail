@@ -21,6 +21,8 @@ mixin _$TimelineState {
   DateTime get selectedDate => throw _privateConstructorUsedError;
   ViewMode get viewMode => throw _privateConstructorUsedError;
   CalendarFormat get timeLineFormat => throw _privateConstructorUsedError;
+  int get unplannedTasksCount => throw _privateConstructorUsedError;
+  int get overdueCount => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $TimelineStateCopyWith<TimelineState> get copyWith =>
@@ -38,7 +40,9 @@ abstract class $TimelineStateCopyWith<$Res> {
       List<Task> searchedTasks,
       DateTime selectedDate,
       ViewMode viewMode,
-      CalendarFormat timeLineFormat});
+      CalendarFormat timeLineFormat,
+      int unplannedTasksCount,
+      int overdueCount});
 }
 
 /// @nodoc
@@ -59,6 +63,8 @@ class _$TimelineStateCopyWithImpl<$Res, $Val extends TimelineState>
     Object? selectedDate = null,
     Object? viewMode = null,
     Object? timeLineFormat = null,
+    Object? unplannedTasksCount = null,
+    Object? overdueCount = null,
   }) {
     return _then(_value.copyWith(
       tasks: null == tasks
@@ -81,6 +87,14 @@ class _$TimelineStateCopyWithImpl<$Res, $Val extends TimelineState>
           ? _value.timeLineFormat
           : timeLineFormat // ignore: cast_nullable_to_non_nullable
               as CalendarFormat,
+      unplannedTasksCount: null == unplannedTasksCount
+          ? _value.unplannedTasksCount
+          : unplannedTasksCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      overdueCount: null == overdueCount
+          ? _value.overdueCount
+          : overdueCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -98,7 +112,9 @@ abstract class _$$_TimelineStateCopyWith<$Res>
       List<Task> searchedTasks,
       DateTime selectedDate,
       ViewMode viewMode,
-      CalendarFormat timeLineFormat});
+      CalendarFormat timeLineFormat,
+      int unplannedTasksCount,
+      int overdueCount});
 }
 
 /// @nodoc
@@ -117,6 +133,8 @@ class __$$_TimelineStateCopyWithImpl<$Res>
     Object? selectedDate = null,
     Object? viewMode = null,
     Object? timeLineFormat = null,
+    Object? unplannedTasksCount = null,
+    Object? overdueCount = null,
   }) {
     return _then(_$_TimelineState(
       tasks: null == tasks
@@ -139,6 +157,14 @@ class __$$_TimelineStateCopyWithImpl<$Res>
           ? _value.timeLineFormat
           : timeLineFormat // ignore: cast_nullable_to_non_nullable
               as CalendarFormat,
+      unplannedTasksCount: null == unplannedTasksCount
+          ? _value.unplannedTasksCount
+          : unplannedTasksCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      overdueCount: null == overdueCount
+          ? _value.overdueCount
+          : overdueCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -151,7 +177,9 @@ class _$_TimelineState implements _TimelineState {
       required final List<Task> searchedTasks,
       required this.selectedDate,
       required this.viewMode,
-      required this.timeLineFormat})
+      required this.timeLineFormat,
+      required this.unplannedTasksCount,
+      required this.overdueCount})
       : _tasks = tasks,
         _searchedTasks = searchedTasks;
 
@@ -177,10 +205,14 @@ class _$_TimelineState implements _TimelineState {
   final ViewMode viewMode;
   @override
   final CalendarFormat timeLineFormat;
+  @override
+  final int unplannedTasksCount;
+  @override
+  final int overdueCount;
 
   @override
   String toString() {
-    return 'TimelineState(tasks: $tasks, searchedTasks: $searchedTasks, selectedDate: $selectedDate, viewMode: $viewMode, timeLineFormat: $timeLineFormat)';
+    return 'TimelineState(tasks: $tasks, searchedTasks: $searchedTasks, selectedDate: $selectedDate, viewMode: $viewMode, timeLineFormat: $timeLineFormat, unplannedTasksCount: $unplannedTasksCount, overdueCount: $overdueCount)';
   }
 
   @override
@@ -196,7 +228,11 @@ class _$_TimelineState implements _TimelineState {
             (identical(other.viewMode, viewMode) ||
                 other.viewMode == viewMode) &&
             (identical(other.timeLineFormat, timeLineFormat) ||
-                other.timeLineFormat == timeLineFormat));
+                other.timeLineFormat == timeLineFormat) &&
+            (identical(other.unplannedTasksCount, unplannedTasksCount) ||
+                other.unplannedTasksCount == unplannedTasksCount) &&
+            (identical(other.overdueCount, overdueCount) ||
+                other.overdueCount == overdueCount));
   }
 
   @override
@@ -206,7 +242,9 @@ class _$_TimelineState implements _TimelineState {
       const DeepCollectionEquality().hash(_searchedTasks),
       selectedDate,
       viewMode,
-      timeLineFormat);
+      timeLineFormat,
+      unplannedTasksCount,
+      overdueCount);
 
   @JsonKey(ignore: true)
   @override
@@ -221,7 +259,9 @@ abstract class _TimelineState implements TimelineState {
       required final List<Task> searchedTasks,
       required final DateTime selectedDate,
       required final ViewMode viewMode,
-      required final CalendarFormat timeLineFormat}) = _$_TimelineState;
+      required final CalendarFormat timeLineFormat,
+      required final int unplannedTasksCount,
+      required final int overdueCount}) = _$_TimelineState;
 
   @override
   List<Task> get tasks;
@@ -233,6 +273,10 @@ abstract class _TimelineState implements TimelineState {
   ViewMode get viewMode;
   @override
   CalendarFormat get timeLineFormat;
+  @override
+  int get unplannedTasksCount;
+  @override
+  int get overdueCount;
   @override
   @JsonKey(ignore: true)
   _$$_TimelineStateCopyWith<_$_TimelineState> get copyWith =>

@@ -24,6 +24,7 @@ mixin _$Task {
   DateTime? get dueDate => throw _privateConstructorUsedError;
   Priority get priority => throw _privateConstructorUsedError;
   Project? get project => throw _privateConstructorUsedError;
+  bool get fromCalendar => throw _privateConstructorUsedError;
   List<Tag>? get tags => throw _privateConstructorUsedError;
   List<CheckListItem>? get checklist => throw _privateConstructorUsedError;
   DateTime? get createdOn => throw _privateConstructorUsedError;
@@ -48,6 +49,7 @@ abstract class $TaskCopyWith<$Res> {
       DateTime? dueDate,
       Priority priority,
       Project? project,
+      bool fromCalendar,
       List<Tag>? tags,
       List<CheckListItem>? checklist,
       DateTime? createdOn,
@@ -78,6 +80,7 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
     Object? dueDate = freezed,
     Object? priority = null,
     Object? project = freezed,
+    Object? fromCalendar = null,
     Object? tags = freezed,
     Object? checklist = freezed,
     Object? createdOn = freezed,
@@ -117,6 +120,10 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
           ? _value.project
           : project // ignore: cast_nullable_to_non_nullable
               as Project?,
+      fromCalendar: null == fromCalendar
+          ? _value.fromCalendar
+          : fromCalendar // ignore: cast_nullable_to_non_nullable
+              as bool,
       tags: freezed == tags
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -168,6 +175,7 @@ abstract class _$$_TaskCopyWith<$Res> implements $TaskCopyWith<$Res> {
       DateTime? dueDate,
       Priority priority,
       Project? project,
+      bool fromCalendar,
       List<Tag>? tags,
       List<CheckListItem>? checklist,
       DateTime? createdOn,
@@ -195,6 +203,7 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
     Object? dueDate = freezed,
     Object? priority = null,
     Object? project = freezed,
+    Object? fromCalendar = null,
     Object? tags = freezed,
     Object? checklist = freezed,
     Object? createdOn = freezed,
@@ -234,6 +243,10 @@ class __$$_TaskCopyWithImpl<$Res> extends _$TaskCopyWithImpl<$Res, _$_Task>
           ? _value.project
           : project // ignore: cast_nullable_to_non_nullable
               as Project?,
+      fromCalendar: null == fromCalendar
+          ? _value.fromCalendar
+          : fromCalendar // ignore: cast_nullable_to_non_nullable
+              as bool,
       tags: freezed == tags
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -270,6 +283,7 @@ class _$_Task implements _Task {
       this.dueDate,
       this.priority = Priority.noPriority,
       this.project,
+      this.fromCalendar = false,
       final List<Tag>? tags,
       final List<CheckListItem>? checklist,
       this.createdOn,
@@ -298,6 +312,9 @@ class _$_Task implements _Task {
   final Priority priority;
   @override
   final Project? project;
+  @override
+  @JsonKey()
+  final bool fromCalendar;
   final List<Tag>? _tags;
   @override
   List<Tag>? get tags {
@@ -333,7 +350,7 @@ class _$_Task implements _Task {
 
   @override
   String toString() {
-    return 'Task(id: $id, title: $title, description: $description, isCompleted: $isCompleted, isNote: $isNote, dueDate: $dueDate, priority: $priority, project: $project, tags: $tags, checklist: $checklist, createdOn: $createdOn, updatedOn: $updatedOn, reminders: $reminders)';
+    return 'Task(id: $id, title: $title, description: $description, isCompleted: $isCompleted, isNote: $isNote, dueDate: $dueDate, priority: $priority, project: $project, fromCalendar: $fromCalendar, tags: $tags, checklist: $checklist, createdOn: $createdOn, updatedOn: $updatedOn, reminders: $reminders)';
   }
 
   @override
@@ -352,6 +369,8 @@ class _$_Task implements _Task {
             (identical(other.priority, priority) ||
                 other.priority == priority) &&
             (identical(other.project, project) || other.project == project) &&
+            (identical(other.fromCalendar, fromCalendar) ||
+                other.fromCalendar == fromCalendar) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
             const DeepCollectionEquality()
                 .equals(other._checklist, _checklist) &&
@@ -374,6 +393,7 @@ class _$_Task implements _Task {
       dueDate,
       priority,
       project,
+      fromCalendar,
       const DeepCollectionEquality().hash(_tags),
       const DeepCollectionEquality().hash(_checklist),
       createdOn,
@@ -397,6 +417,7 @@ abstract class _Task implements Task {
       final DateTime? dueDate,
       final Priority priority,
       final Project? project,
+      final bool fromCalendar,
       final List<Tag>? tags,
       final List<CheckListItem>? checklist,
       final DateTime? createdOn,
@@ -419,6 +440,8 @@ abstract class _Task implements Task {
   Priority get priority;
   @override
   Project? get project;
+  @override
+  bool get fromCalendar;
   @override
   List<Tag>? get tags;
   @override

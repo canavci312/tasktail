@@ -19,6 +19,7 @@ class TaskDto {
     this.updatedOn,
     this.isNote = false,
     this.isCompleted = false,
+    this.fromCalendar =false, 
     this.reminders = const [],
     this.checklist,
   });
@@ -30,6 +31,7 @@ class TaskDto {
       dueDate: task.dueDate,
       priority: task.priority,
       createdOn: task.createdOn,
+      fromCalendar: task.fromCalendar,
       updatedOn: task.updatedOn,
       isNote: task.isNote,
       isCompleted: task.isCompleted,
@@ -38,11 +40,14 @@ class TaskDto {
       checklist: task.checklist
           ?.map((e) => CheckListItemDto.fromDomainModel(e))
           .toList(),
-    )..project.value =
+    );
+
+    taskDto.project.value =
         task.project != null ? ProjectDto.fromDomainModel(task.project!) : null;
-    if (task.tags != null) {
-      taskDto.tags.addAll(task.tags!.map((e) => TagDto.fromDomainModel(e)));
-    }
+
+    taskDto.tags.clear();
+    taskDto.tags.addAll(task.tags!.map((e) => TagDto.fromDomainModel(e)));
+
     return taskDto;
   }
   Id? id;
@@ -50,6 +55,7 @@ class TaskDto {
   final String? description;
   final bool isCompleted;
   final bool isNote;
+  final bool fromCalendar;
   final DateTime? dueDate;
   @enumerated
   final Priority priority;
@@ -71,6 +77,7 @@ class TaskDto {
       createdOn: createdOn,
       updatedOn: updatedOn,
       isNote: isNote,
+      fromCalendar: fromCalendar,
       isCompleted: isCompleted,
       project: project.value?.toDomainModel(),
       tags: tags.map((e) => e.toDomainModel()).toList(),

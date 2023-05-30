@@ -5,5 +5,8 @@ part 'workspace_state.dart';
 part 'workspace_cubit.freezed.dart';
 
 class WorkspaceCubit extends Cubit<WorkspaceState> {
-    WorkspaceCubit(): super(const WorkspaceState());
+  WorkspaceCubit() : super(const WorkspaceState(isCalendarImportOpen: false));
+  void toggleCalendarImport() {
+    emit(state.copyWith(isCalendarImportOpen: !state.isCalendarImportOpen));
+  }
 }

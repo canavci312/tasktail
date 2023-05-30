@@ -1,9 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:calendar_time/calendar_time.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_app/domain/repositories/models/checklist_item.dart';
-import 'package:task_app/domain/repositories/models/project.dart';
 import 'package:task_app/domain/repositories/models/reminder.dart';
 import 'package:task_app/domain/repositories/models/tag.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
@@ -13,6 +13,8 @@ import 'package:task_app/features/checklist/view/checklist_page.dart';
 import 'package:task_app/features/select_project/view/select_project_page.dart';
 import 'package:task_app/features/tags/select_tag/select_tag.dart';
 import 'package:task_app/features/timeline/view/timeline_view.dart';
+import 'package:task_app/locator.dart';
+import 'package:task_app/navigation/router.dart';
 import 'package:task_app/utils/extensions/string_extensions.dart';
 
 class AddEditTaskView extends StatefulWidget {
@@ -61,7 +63,37 @@ class _AddEditTaskViewState extends State<AddEditTaskView> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           cubit.saveTask();
-          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            cubit.state.dueDate == null && cubit.state.project == null
+                ? SnackBar(
+                    content: const Text(
+                      'Task added to unplanned tasks',
+                    ),
+                    action: SnackBarAction(
+                      label: 'View',
+                      onPressed: () {
+                        getIt<AppRouter>().navigate(
+                          const UnplannedRoute(),
+                        );
+                      },
+                    ),
+                  )
+                : SnackBar(
+                    content: const Text(
+                      'Task added to timeline',
+                    ),
+                    action: SnackBarAction(
+                      label: 'View',
+                      onPressed: () {
+                        getIt<AppRouter>().navigate(
+                          const TimelineRoute(),
+                        );
+                      },
+                    ),
+                  ),
+          );
+
+          context.router.pop();
         },
         label: const Text('Save'),
       ),
@@ -139,10 +171,7 @@ class SelectProject extends StatelessWidget {
                 )
               : const Text('Select project'),
           onTap: () async {
-            final result = await showModalBottomSheet<Project>(
-              context: context,
-              builder: (context) => const SelectProjectPage(),
-            );
+            final result = await SelectProjectPage.show(context);
             if (result != null && context.mounted) {
               context.read<AddEditTaskCubit>().projectSelected(result);
             }
@@ -222,114 +251,147 @@ class TaskChecklist extends StatelessWidget {
 }
 
 class SetReminder extends StatelessWidget {
-  const SetReminder({super.key});
-
+  const SetReminder({
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
-    return TaskPropertySetTile(
-      icon: Icons.notification_add_outlined,
-      content: const Text('Add reminder'),
-      onTap: () async {
-        await showModalBottomSheet<void>(
-          context: context,
-          builder: (context) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Add reminder',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                ListTile(
-                  title: Text(
-                    'Scheduled time (${TimeOfDay.now().format(context)})',
-                  ),
-                  onTap: () => Navigator.of(context).pop(
-                    Reminder(
-                      date: DateTime.now(),
-                      type: ReminderType.onTime,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    '5 mins before (${TimeOfDay.now().format(context)})',
-                  ),
-                  onTap: () => Navigator.of(context).pop(
-                    Reminder(
-                      date: DateTime.now(),
-                      type: ReminderType.fiveMinutes,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    '10 mins before (${TimeOfDay.now().format(context)})',
-                  ),
-                  onTap: () => Navigator.of(context).pop(
-                    Reminder(
-                      date: DateTime.now(),
-                      type: ReminderType.tenMinutes,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    '1 hour before (${TimeOfDay.now().format(context)})',
-                  ),
-                  onTap: () => Navigator.of(context).pop(
-                    Reminder(
-                      date: DateTime.now(),
-                      type: ReminderType.oneHour,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.alarm_outlined),
-                  title: const Text('At a specific time'),
-                  onTap: () async {
-                    final result = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (result != null && context.mounted) {
-                      Navigator.of(context).pop(
-                        Reminder(type: ReminderType.atSpecificTime),
-                      );
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.alarm_add_outlined),
-                  title: const Text('At a specific date and time'),
-                  onTap: () async {
-                    final result = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(const Duration(days: 365)),
-                    );
-                    if (result != null && context.mounted) {
-                      Navigator.of(context).pop(
-                        Reminder(
-                          date: result,
-                          type: ReminderType.atSpecificTimeAndDate,
+    return BlocBuilder<AddEditTaskCubit, AddEditTaskState>(
+      builder: (context, state) {
+        return TaskPropertySetTile(
+          icon: Icons.notification_add_outlined,
+          content: state.reminders.isEmpty
+              ? const Text('Add reminder')
+              : Wrap(
+                  children: [
+                    for (final reminder in state.reminders)
+                      Chip(
+                        label: Text(
+                          reminder.type.toString(),
                         ),
-                      );
-                    }
-                  },
+                      ),
+                  ],
                 ),
-                ListTile(
-                  leading: const Icon(Icons.alarm_off_outlined),
-                  title: const Text('No reminder'),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
+          onTap: () async {
+            final result = await showModalBottomSheet<Reminder>(
+              context: context,
+              builder: (context) => Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Add reminder',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Visibility(
+                      visible: state.dueDate != null,
+                      child: ListTile(
+                        title: Text(
+                          'Scheduled time (${state.dueDate?.format('jm')})',
+                        ),
+                        onTap: () => Navigator.of(context).pop(
+                          Reminder(
+                            date: state.dueDate,
+                            type: ReminderType.onTime,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: state.dueDate != null,
+                      child: ListTile(
+                        title: Text(
+                          '5 mins before (${state.dueDate?.format('jm')})',
+                        ),
+                        onTap: () => Navigator.of(context).pop(
+                          Reminder(
+                            date: state.dueDate,
+                            type: ReminderType.fiveMinutes,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: state.dueDate != null,
+                      child: ListTile(
+                        title: Text(
+                          '10 mins before (${state.dueDate?.format('jm')})',
+                        ),
+                        onTap: () => Navigator.of(context).pop(
+                          Reminder(
+                            date: state.dueDate,
+                            type: ReminderType.tenMinutes,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: state.dueDate != null,
+                      child: ListTile(
+                        title: Text(
+                          '1 hour before (${state.dueDate?.format('jm')})',
+                        ),
+                        onTap: () => Navigator.of(context).pop(
+                          Reminder(
+                            date: state.dueDate,
+                            type: ReminderType.oneHour,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.alarm_outlined),
+                      title: const Text('At a specific time'),
+                      onTap: () async {
+                        final result = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (result != null && context.mounted) {
+                          Navigator.of(context).pop(
+                            Reminder(type: ReminderType.atSpecificTime),
+                          );
+                        }
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.alarm_add_outlined),
+                      title: const Text('At a specific date and time'),
+                      onTap: () async {
+                        final result = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now(),
+                          lastDate:
+                              DateTime.now().add(const Duration(days: 365)),
+                        );
+                        if (result != null && context.mounted) {
+                          Navigator.of(context).pop(
+                            Reminder(
+                              date: result,
+                              type: ReminderType.atSpecificTimeAndDate,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.alarm_off_outlined),
+                      title: const Text('No reminder'),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+            if (context.mounted) {
+              context.read<AddEditTaskCubit>().reminderAdded(result);
+            }
+          },
         );
       },
     );
@@ -343,64 +405,81 @@ class SelectDateTime extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AddEditTaskCubit, AddEditTaskState>(
       builder: (context, state) {
-        return TaskPropertySetTile(
-          icon: Icons.date_range_outlined,
-          content: Row(
-            children: [
-              InkWell(
-                onTap: () async {
-                  final result = await showDatePicker(
-                    context: context,
-                    initialDate: state.dueDate ?? DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime.now().add(const Duration(days: 365)),
-                  );
-                  if (result != null && context.mounted) {
-                    context.read<AddEditTaskCubit>().dueDateChanged(result);
-                  }
-                },
-                child: Chip(
-                  label: Text(
-                    CalendarTime(state.dueDate).toHumanArray.length == 1
-                        ? CalendarTime(state.dueDate).format(
-                            state.dueDate!.isThisYear
-                                ? 'EEE, MMM d'
-                                : 'EEE, MMM d, ' 'yy',
+        return BlocBuilder<AddEditTaskCubit, AddEditTaskState>(
+          builder: (context, state) {
+            return TaskPropertySetTile(
+              icon: Icons.date_range_outlined,
+              content: Row(
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      final result = await showDatePicker(
+                        context: context,
+                        initialDate: state.dueDate ?? DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(const Duration(days: 365)),
+                      );
+
+                      if (result != null && context.mounted) {
+                        context.read<AddEditTaskCubit>().dueDateChanged(result);
+                      }
+                    },
+                    child: state.dueDate == null
+                        ? const Chip(
+                            label: Text('Date'),
                           )
-                        : CalendarTime(state.dueDate).toHumanArray[0],
+                        : Chip(
+                            label: Text(
+                              CalendarTime(state.dueDate).toHumanArray.length ==
+                                      1
+                                  ? CalendarTime(state.dueDate).format(
+                                      state.dueDate!.isThisYear
+                                          ? 'EEE, MMM d'
+                                          : 'EEE, MMM d, ' 'yy',
+                                    )
+                                  : CalendarTime(state.dueDate).toHumanArray[0],
+                            ),
+                          ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Visibility(
-                visible: state.dueDate != null,
-                child: InkWell(
-                  onTap: () async {
-                    final result = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (result != null && context.mounted) {
-                      context.read<AddEditTaskCubit>().dueTimeChanged(result);
-                    }
-                  },
-                  child: Chip(
-                    label: Text(
-                      CalendarTime(state.dueDate).toHumanArray.length == 1
-                          ? CalendarTime(state.dueDate).format('h:mm a')
-                          : CalendarTime(state.dueDate).toHumanArray[1],
+                  const SizedBox(width: 8),
+                  Visibility(
+                    visible: state.dueDate != null,
+                    child: InkWell(
+                      onTap: () async {
+                        final result = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now(),
+                        );
+                        if (result != null && context.mounted) {
+                          context
+                              .read<AddEditTaskCubit>()
+                              .dueTimeChanged(result);
+                        }
+                      },
+                      child: Chip(
+                        label: Text(
+                          CalendarTime(state.dueDate).toHumanArray.length == 1
+                              ? CalendarTime(state.dueDate).format('h:mm a')
+                              : CalendarTime(state.dueDate).toHumanArray[1],
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  Visibility(
+                    visible: state.dueDate != null,
+                    child: IconButton(
+                      onPressed: () {
+                        context.read<AddEditTaskCubit>().dueDateRemoved();
+                      },
+                      icon: const Icon(
+                        Icons.cancel_outlined,
+                      ),
+                    ),
+                  )
+                ],
               ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.cancel_outlined,
-                ),
-              )
-            ],
-          ),
+            );
+          },
         );
       },
     );

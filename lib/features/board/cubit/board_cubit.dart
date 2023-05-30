@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:task_app/data/repositories/project_repository.dart';
@@ -11,7 +13,7 @@ part 'board_cubit.freezed.dart';
 
 class BoardCubit extends Cubit<BoardState> {
   BoardCubit(this.projectRepository, this.taskRepository)
-      : super(const BoardState(projects: [],tasks: []));
+      : super(const BoardState(projects: [], tasks: []));
   final ProjectRepository projectRepository;
   final TaskRepository taskRepository;
   void listenProjects() {
@@ -24,12 +26,29 @@ class BoardCubit extends Cubit<BoardState> {
     });
   }
 
+  StreamSubscription<List<Task>>? subscription;
+  void listenTasksByProjectId(int projectId) {
+    subscription = taskRepository.listenTasksByProjectId(projectId).listen((
+      event,
+    ) {
+      emit(
+        state.copyWith(
+          tasks: event,
+        ),
+      );
+    });
+  }
+
   void changeSelectedProject(Project? item) {
-    var tasks = <Task>[];
     if (item != null) {
-      tasks = taskRepository.getTasksByProjectId(item.id!);
+      subscription?.cancel();
+      listenTasksByProjectId(item.id!);
     }
-    emit(state.copyWith(selectedProject: item,tasks: tasks));
+    emit(
+      state.copyWith(
+        selectedProject: item,
+      ),
+    );
   }
 
   void reorderProjects(int index, int index2) {
@@ -37,5 +56,10 @@ class BoardCubit extends Cubit<BoardState> {
     emit(state.copyWith(projects: projects));
   }
 
-  void toggleTask(Task task) {}
+  void toggleTask(Task task) {
+    taskRepository.updateTask(task.copyWith(isCompleted: !task.isCompleted));
+    final tasks =
+        taskRepository.getTasksByProjectId(state.selectedProject!.id!);
+    emit(state.copyWith(tasks: tasks));
+  }
 }

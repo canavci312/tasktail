@@ -9,6 +9,7 @@ class AddEditTaskState with _$AddEditTaskState {
     required Project? project,
     required DateTime? dueDate,
     required Priority? priority,
+    required List<Reminder> reminders,
     required List<Tag>? tags,
   }) = _AddEditTaskState;
 }

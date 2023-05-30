@@ -22,6 +22,7 @@ mixin _$AddEditTaskState {
   Project? get project => throw _privateConstructorUsedError;
   DateTime? get dueDate => throw _privateConstructorUsedError;
   Priority? get priority => throw _privateConstructorUsedError;
+  List<Reminder> get reminders => throw _privateConstructorUsedError;
   List<Tag>? get tags => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -42,6 +43,7 @@ abstract class $AddEditTaskStateCopyWith<$Res> {
       Project? project,
       DateTime? dueDate,
       Priority? priority,
+      List<Reminder> reminders,
       List<Tag>? tags});
 
   $ProjectCopyWith<$Res>? get project;
@@ -66,6 +68,7 @@ class _$AddEditTaskStateCopyWithImpl<$Res, $Val extends AddEditTaskState>
     Object? project = freezed,
     Object? dueDate = freezed,
     Object? priority = freezed,
+    Object? reminders = null,
     Object? tags = freezed,
   }) {
     return _then(_value.copyWith(
@@ -93,6 +96,10 @@ class _$AddEditTaskStateCopyWithImpl<$Res, $Val extends AddEditTaskState>
           ? _value.priority
           : priority // ignore: cast_nullable_to_non_nullable
               as Priority?,
+      reminders: null == reminders
+          ? _value.reminders
+          : reminders // ignore: cast_nullable_to_non_nullable
+              as List<Reminder>,
       tags: freezed == tags
           ? _value.tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -128,6 +135,7 @@ abstract class _$$_AddEditTaskStateCopyWith<$Res>
       Project? project,
       DateTime? dueDate,
       Priority? priority,
+      List<Reminder> reminders,
       List<Tag>? tags});
 
   @override
@@ -151,6 +159,7 @@ class __$$_AddEditTaskStateCopyWithImpl<$Res>
     Object? project = freezed,
     Object? dueDate = freezed,
     Object? priority = freezed,
+    Object? reminders = null,
     Object? tags = freezed,
   }) {
     return _then(_$_AddEditTaskState(
@@ -178,6 +187,10 @@ class __$$_AddEditTaskStateCopyWithImpl<$Res>
           ? _value.priority
           : priority // ignore: cast_nullable_to_non_nullable
               as Priority?,
+      reminders: null == reminders
+          ? _value._reminders
+          : reminders // ignore: cast_nullable_to_non_nullable
+              as List<Reminder>,
       tags: freezed == tags
           ? _value._tags
           : tags // ignore: cast_nullable_to_non_nullable
@@ -196,8 +209,10 @@ class _$_AddEditTaskState implements _AddEditTaskState {
       required this.project,
       required this.dueDate,
       required this.priority,
+      required final List<Reminder> reminders,
       required final List<Tag>? tags})
       : _checkListItems = checkListItems,
+        _reminders = reminders,
         _tags = tags;
 
   final List<CheckListItem> _checkListItems;
@@ -218,6 +233,14 @@ class _$_AddEditTaskState implements _AddEditTaskState {
   final DateTime? dueDate;
   @override
   final Priority? priority;
+  final List<Reminder> _reminders;
+  @override
+  List<Reminder> get reminders {
+    if (_reminders is EqualUnmodifiableListView) return _reminders;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_reminders);
+  }
+
   final List<Tag>? _tags;
   @override
   List<Tag>? get tags {
@@ -230,7 +253,7 @@ class _$_AddEditTaskState implements _AddEditTaskState {
 
   @override
   String toString() {
-    return 'AddEditTaskState(checkListItems: $checkListItems, title: $title, description: $description, project: $project, dueDate: $dueDate, priority: $priority, tags: $tags)';
+    return 'AddEditTaskState(checkListItems: $checkListItems, title: $title, description: $description, project: $project, dueDate: $dueDate, priority: $priority, reminders: $reminders, tags: $tags)';
   }
 
   @override
@@ -247,6 +270,8 @@ class _$_AddEditTaskState implements _AddEditTaskState {
             (identical(other.dueDate, dueDate) || other.dueDate == dueDate) &&
             (identical(other.priority, priority) ||
                 other.priority == priority) &&
+            const DeepCollectionEquality()
+                .equals(other._reminders, _reminders) &&
             const DeepCollectionEquality().equals(other._tags, _tags));
   }
 
@@ -259,6 +284,7 @@ class _$_AddEditTaskState implements _AddEditTaskState {
       project,
       dueDate,
       priority,
+      const DeepCollectionEquality().hash(_reminders),
       const DeepCollectionEquality().hash(_tags));
 
   @JsonKey(ignore: true)
@@ -276,6 +302,7 @@ abstract class _AddEditTaskState implements AddEditTaskState {
       required final Project? project,
       required final DateTime? dueDate,
       required final Priority? priority,
+      required final List<Reminder> reminders,
       required final List<Tag>? tags}) = _$_AddEditTaskState;
 
   @override
@@ -290,6 +317,8 @@ abstract class _AddEditTaskState implements AddEditTaskState {
   DateTime? get dueDate;
   @override
   Priority? get priority;
+  @override
+  List<Reminder> get reminders;
   @override
   List<Tag>? get tags;
   @override

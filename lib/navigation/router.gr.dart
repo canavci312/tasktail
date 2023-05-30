@@ -66,6 +66,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const TimelinePage(),
       );
     },
+    OverdueTasksRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const OverdueTasksPage(),
+      );
+    },
   };
 }
 
@@ -211,6 +217,20 @@ class TimelineRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'TimelineRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [OverdueTasksPage]
+class OverdueTasksRoute extends PageRouteInfo<void> {
+  const OverdueTasksRoute({List<PageRouteInfo>? children})
+      : super(
+          OverdueTasksRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'OverdueTasksRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +6,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:task_app/features/add_edit_project/view/add_edit_project_page.dart';
 
 import 'package:task_app/features/board/board.dart';
-import 'package:task_app/features/timeline/view/timeline_view.dart';
+import 'package:task_app/features/widgets/checkbox_task_tile.dart';
 import 'package:task_app/features/widgets/expandable_fab.dart';
 import 'package:task_app/navigation/router.dart';
 
@@ -219,106 +218,9 @@ class BoardView extends StatelessWidget {
                             },
                             itemBuilder: (BuildContext context, int index) {
                               final task = state.tasks[index];
-                              return CheckboxListTile(
-                                checkboxShape: const CircleBorder(),
-                                value: state.tasks[index].isCompleted,
-                                onChanged: (bool? value) {
-                                  cubit.toggleTask(
-                                    task,
-                                  );
-                                },
-                                selected: task.isCompleted,
-                                title: Text(
-                                  task.title!,
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Visibility(
-                                      visible: task.description != null,
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.description_outlined,
-                                            size: 16,
-                                          ),
-                                          const SizedBox(
-                                            width: 4,
-                                          ),
-                                          Text(
-                                            task.description!,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Wrap(
-                                      children: [
-                                        Visibility(
-                                          visible: task.dueDate != null,
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 4),
-                                            child: Row(
-                                              children: [
-                                                const Icon(
-                                                  Icons.calendar_today_outlined,
-                                                  size: 16,
-                                                ),
-                                                const SizedBox(
-                                                  width: 4,
-                                                ),
-                                                Text(
-                                                  CalendarTime(task.dueDate)
-                                                      .toHuman,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Visibility(
-                                          visible: task.priority !=
-                                              Priority.noPriority,
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 4),
-                                            child: Icon(
-                                              Icons.flag,
-                                              size: 16,
-                                              color: task.priority.color,
-                                            ),
-                                          ),
-                                        ),
-                                        Visibility(
-                                          visible: task.reminders.isNotEmpty,
-                                          child: const Icon(
-                                            Icons.alarm_outlined,
-                                            size: 16,
-                                          ),
-                                        ),
-                                        Visibility(
-                                          visible: task.checklist != null &&
-                                              task.checklist!.isNotEmpty,
-                                          child: Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.checklist_outlined,
-                                                size: 16,
-                                              ),
-                                              const SizedBox(
-                                                width: 4,
-                                              ),
-                                              Text(
-                                                '${task.checklist?.where((element) {
-                                                  return element.isCompleted;
-                                                }).length} / ${task.checklist?.length}',
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                              return BaseCheckboxTaskTile(
+                                onChanged: () => cubit.toggleTask(task),
+                                task: task,
                               );
                             },
                           ),

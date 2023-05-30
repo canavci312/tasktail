@@ -15,13 +15,21 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$WorkspaceState {}
+mixin _$WorkspaceState {
+  bool get isCalendarImportOpen => throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $WorkspaceStateCopyWith<WorkspaceState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
 
 /// @nodoc
 abstract class $WorkspaceStateCopyWith<$Res> {
   factory $WorkspaceStateCopyWith(
           WorkspaceState value, $Res Function(WorkspaceState) then) =
       _$WorkspaceStateCopyWithImpl<$Res, WorkspaceState>;
+  @useResult
+  $Res call({bool isCalendarImportOpen});
 }
 
 /// @nodoc
@@ -33,13 +41,30 @@ class _$WorkspaceStateCopyWithImpl<$Res, $Val extends WorkspaceState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? isCalendarImportOpen = null,
+  }) {
+    return _then(_value.copyWith(
+      isCalendarImportOpen: null == isCalendarImportOpen
+          ? _value.isCalendarImportOpen
+          : isCalendarImportOpen // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
+  }
 }
 
 /// @nodoc
-abstract class _$$_WorkspaceStateCopyWith<$Res> {
+abstract class _$$_WorkspaceStateCopyWith<$Res>
+    implements $WorkspaceStateCopyWith<$Res> {
   factory _$$_WorkspaceStateCopyWith(
           _$_WorkspaceState value, $Res Function(_$_WorkspaceState) then) =
       __$$_WorkspaceStateCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({bool isCalendarImportOpen});
 }
 
 /// @nodoc
@@ -49,28 +74,61 @@ class __$$_WorkspaceStateCopyWithImpl<$Res>
   __$$_WorkspaceStateCopyWithImpl(
       _$_WorkspaceState _value, $Res Function(_$_WorkspaceState) _then)
       : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? isCalendarImportOpen = null,
+  }) {
+    return _then(_$_WorkspaceState(
+      isCalendarImportOpen: null == isCalendarImportOpen
+          ? _value.isCalendarImportOpen
+          : isCalendarImportOpen // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 }
 
 /// @nodoc
 
 class _$_WorkspaceState implements _WorkspaceState {
-  const _$_WorkspaceState();
+  const _$_WorkspaceState({required this.isCalendarImportOpen});
+
+  @override
+  final bool isCalendarImportOpen;
 
   @override
   String toString() {
-    return 'WorkspaceState()';
+    return 'WorkspaceState(isCalendarImportOpen: $isCalendarImportOpen)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_WorkspaceState);
+        (other.runtimeType == runtimeType &&
+            other is _$_WorkspaceState &&
+            (identical(other.isCalendarImportOpen, isCalendarImportOpen) ||
+                other.isCalendarImportOpen == isCalendarImportOpen));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, isCalendarImportOpen);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_WorkspaceStateCopyWith<_$_WorkspaceState> get copyWith =>
+      __$$_WorkspaceStateCopyWithImpl<_$_WorkspaceState>(this, _$identity);
 }
 
 abstract class _WorkspaceState implements WorkspaceState {
-  const factory _WorkspaceState() = _$_WorkspaceState;
+  const factory _WorkspaceState({required final bool isCalendarImportOpen}) =
+      _$_WorkspaceState;
+
+  @override
+  bool get isCalendarImportOpen;
+  @override
+  @JsonKey(ignore: true)
+  _$$_WorkspaceStateCopyWith<_$_WorkspaceState> get copyWith =>
+      throw _privateConstructorUsedError;
 }

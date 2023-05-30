@@ -10,5 +10,7 @@ class TimelineState with _$TimelineState {
     required DateTime selectedDate,
     required ViewMode viewMode,
     required CalendarFormat timeLineFormat,
+    required int unplannedTasksCount,
+    required int overdueCount,
   }) = _TimelineState;
 }

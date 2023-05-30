@@ -25,7 +25,7 @@ class ChecklistView extends StatelessWidget {
           itemCount: items.length,
           itemBuilder: (context, index) {
             final item = items[index];
-            return CheckboxListTile(
+            return CheckboxListTile.adaptive(
               value: item.isCompleted,
               onChanged: (value) {},
               key: UniqueKey(),

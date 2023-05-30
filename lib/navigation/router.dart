@@ -5,6 +5,7 @@ import 'package:task_app/domain/repositories/models/task.dart';
 import 'package:task_app/features/add_edit_task/view/add_edit_task_page.dart';
 import 'package:task_app/features/board/view/board_page.dart';
 import 'package:task_app/features/home/view/home_page.dart';
+import 'package:task_app/features/overdue_tasks/view/overdue_tasks_page.dart';
 import 'package:task_app/features/project_settings/view/project_settings_page.dart';
 import 'package:task_app/features/timeline/view/timeline_page.dart';
 import 'package:task_app/features/unplanned/view/unplanned_page.dart';
@@ -35,5 +36,9 @@ class AppRouter extends _$AppRouter {
           page: ProjectSettingsRoute.page,
           path: '/project-settings',
         ),
+        AutoRoute(
+          page: OverdueTasksRoute.page,
+          path: '/overdue-tasks',
+        )
       ];
 }

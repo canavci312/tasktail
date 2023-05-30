@@ -21,16 +21,6 @@ class SelectProjectView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Container(
-                  height: 4,
-                  width: 32,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-              ),
               Text(
                 'Select Projects',
                 style: Theme.of(context).textTheme.titleLarge,

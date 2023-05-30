@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:task_app/data/awesome_notification_service.dart';
 import 'package:task_app/data/isar/models/project_dto.dart';
 import 'package:task_app/data/isar/models/tag_dto.dart';
 import 'package:task_app/data/isar/models/task_dto.dart';
@@ -18,11 +19,16 @@ Future<void> setup() async {
     [TaskDtoSchema, ProjectDtoSchema, TagDtoSchema],
     directory: dir.path,
   );
+  
 
   getIt
+    ..registerSingleton<AwesomeNotificationService>(
+      AwesomeNotificationService(),
+    )
     ..registerSingleton<TaskRepository>(
       TaskRepository(
         localProvider: isar,
+        awesomeNotificationService: getIt(),
       ),
     )
     ..registerSingleton<TagRepository>(

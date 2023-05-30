@@ -1,15 +1,28 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:task_app/domain/repositories/models/reminder.dart';
+import 'package:task_app/domain/repositories/models/task.dart';
 
 class AwesomeNotificationService {
+  AwesomeNotificationService() {
+    init();
+    setListeners();
+  }
+  Future<bool> requestPermissions() async {
+    if (await AwesomeNotifications().isNotificationAllowed()) {
+      return true;
+    }
+    return AwesomeNotifications().requestPermissionToSendNotifications();
+  }
+
   Future<void> init() async {
     await AwesomeNotifications().initialize(
       // set the icon to null if you want to use the default app icon
-      'resource://drawable/res_app_icon',
+      null,
       [
         NotificationChannel(
           channelGroupKey: 'basic_channel_group',
-          channelKey: 'basic_channel',
+          channelKey: 'reminder_channel',
           channelName: 'Basic notifications',
           channelDescription: 'Notification channel for basic tests',
           defaultColor: const Color(0xFF9D50DD),
@@ -50,15 +63,88 @@ class AwesomeNotificationService {
     });
   }
 
-  void createNotification() {
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 10,
-        channelKey: 'basic_channel',
-        title: 'Simple Notification',
-        body: 'Simple body',
-      ),
-    );
+  void cancelAll() {
+    AwesomeNotifications().cancelAll();
+  }
+
+  void createReminder(Task task) {
+    for (final element in task.reminders) {
+      late NotificationCalendar calendar;
+      switch (element.type) {
+        case ReminderType.atSpecificTime:
+          calendar = NotificationCalendar(
+            hour: element.date!.hour,
+            minute: element.date!.minute,
+            second: element.date!.second,
+            year: element.date!.year,
+            month: element.date!.month,
+            day: element.date!.day,
+          );
+        case ReminderType.atSpecificTimeAndDate:
+          calendar = NotificationCalendar(
+            hour: element.date!.hour,
+            minute: element.date!.minute,
+            second: element.date!.second,
+            year: element.date!.year,
+            month: element.date!.month,
+            day: element.date!.day,
+          );
+        case ReminderType.onTime:
+          calendar = NotificationCalendar(
+            hour: task.dueDate!.hour,
+            minute: task.dueDate!.minute,
+            second: task.dueDate!.second,
+            year: task.dueDate!.year,
+            month: task.dueDate!.month,
+          );
+        case ReminderType.fiveMinutes:
+          final remindDate = task.dueDate!.subtract(const Duration(minutes: 5));
+          calendar = NotificationCalendar(
+            hour: remindDate.hour,
+            minute: remindDate.minute,
+            second: remindDate.second,
+            year: remindDate.year,
+            month: remindDate.month,
+          );
+        case ReminderType.tenMinutes:
+          final remindDate =
+              task.dueDate!.subtract(const Duration(minutes: 10));
+          calendar = NotificationCalendar(
+            hour: remindDate.hour,
+            minute: remindDate.minute,
+            second: remindDate.second,
+            year: remindDate.year,
+            month: remindDate.month,
+          );
+        case ReminderType.oneHour:
+          final remindDate = task.dueDate!.subtract(const Duration(hours: 1));
+          calendar = NotificationCalendar(
+            hour: remindDate.hour,
+            minute: remindDate.minute,
+            second: remindDate.second,
+            year: remindDate.year,
+            month: remindDate.month,
+          );
+      }
+      AwesomeNotifications().createNotification(
+        schedule: calendar,
+        content: NotificationContent(
+          id: task.id!,
+          channelKey: 'reminder_channel',
+          wakeUpScreen: true,
+          badge: 1,
+          title: 'Upcoming event: ${task.title}',
+          body: 'Simple body',
+        ),
+        actionButtons: [
+          NotificationActionButton(key: 'dismiss', label: 'Dismiss'),
+          NotificationActionButton(
+            key: 'complete',
+            label: 'Mark as complete',
+          )
+        ],
+      );
+    }
   }
 }
 

@@ -19,24 +19,40 @@ class WorkspaceView extends StatelessWidget {
       body: BlocBuilder<WorkspaceCubit, WorkspaceState>(
         builder: (context, state) {
           return ListView(
-            children: const [
+            children: [
               ListTile(
-                leading: Icon(Icons.alarm_outlined),
-                title: Text('Reminders'),
+                leading: const Icon(Icons.alarm_outlined),
+                title: const Text('Reminders'),
+                onTap: () async {},
               ),
               ListTile(
-                leading: Icon(Icons.edit_calendar_outlined),
-                title: Text('Import Calendar'),
+                leading: const Icon(Icons.edit_calendar_outlined),
+                title: const Text('Import Calendar'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Switch.adaptive(
+                      value: state.isCalendarImportOpen,
+                      onChanged: (value) {
+                        cubit.toggleCalendarImport();
+                      },
+                    ),
+                    Icon(
+                      Icons.info_outline,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
+                  ],
+                ),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(Icons.note_outlined),
                 title: Text('Notes'),
               ),
-              ListTile(
+              const ListTile(
                 leading: Icon(Icons.local_offer_outlined),
                 title: Text('Tags'),
               ),
-              AboutListTile(
+              const AboutListTile(
                 icon: Icon(Icons.info_outline),
                 applicationName: 'Tasktail',
                 applicationVersion: '1.0.0',

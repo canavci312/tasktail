@@ -142,11 +142,11 @@ class _TimelineViewState extends State<TimelineView> {
           focusedDay: state.selectedDate,
           calendarStyle: CalendarStyle(
             selectedDecoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               shape: BoxShape.circle,
             ),
             todayDecoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.5),
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
               shape: BoxShape.circle,
             ),
             selectedTextStyle: TextStyle(
@@ -283,7 +283,9 @@ class TimelineDayTile extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            tasks?.length.toString() ?? '0',
+                            tasks == null
+                                ? '0'
+                                : tasks!.todaysTasks.length.toString(),
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Text(
@@ -296,20 +298,31 @@ class TimelineDayTile extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          Text(
-                            tasks?.length.toString() ?? '0',
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          Text(
-                            'Overdue',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
+                  child: InkWell(
+                    onTap: () {
+                      context.router.push(
+                        const OverdueTasksRoute(),
+                      );
+                    },
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          children: [
+                            Text(
+                              context
+                                  .read<TimelineCubit>()
+                                  .state
+                                  .overdueCount
+                                  .toString(),
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            Text(
+                              'Overdue',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -321,7 +334,13 @@ class TimelineDayTile extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            tasks?.length.toString() ?? '0',
+                            tasks == null
+                                ? '0'
+                                : context
+                                    .read<TimelineCubit>()
+                                    .state
+                                    .unplannedTasksCount
+                                    .toString(),
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Text(
@@ -351,10 +370,11 @@ class TimelineDayTile extends StatelessWidget {
                           ),
                         ),
                         child: OutlinedDotIndicator(
-                          color: Theme.of(context).primaryColor,
-                          child: const Icon(
+                          color: Theme.of(context).colorScheme.primary,
+                          child: Icon(
                             Icons.add,
                             size: 20,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                       );
@@ -369,7 +389,7 @@ class TimelineDayTile extends StatelessWidget {
                         child: ContainerIndicator(
                           size: 20,
                           child: Container(
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                       );
@@ -380,7 +400,7 @@ class TimelineDayTile extends StatelessWidget {
                           .toggleDone(tasks![index]),
                       child: tasks![index].isCompleted
                           ? DotIndicator(
-                              color: Theme.of(context).primaryColor,
+                              color: Theme.of(context).colorScheme.primary,
                               child: Icon(
                                 Icons.check,
                                 color: Theme.of(context).colorScheme.onPrimary,
@@ -389,13 +409,13 @@ class TimelineDayTile extends StatelessWidget {
                             )
                           : OutlinedDotIndicator(
                               size: 20,
-                              color: Theme.of(context).primaryColor,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                     );
                   },
                   connectorBuilder: (context, index, type) {
                     return SolidLineConnector(
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     );
                   },
                   nodePositionBuilder: (context, index) {

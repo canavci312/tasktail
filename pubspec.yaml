@@ -5,7 +5,7 @@ publish_to: none
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-dependency_overrides: 
+dependency_overrides:
   intl: ^0.18.0
 dependencies:
   auto_route: ^6.1.0
@@ -15,6 +15,7 @@ dependencies:
   dart_date:
     git:
       url: https://github.com/spaznuski/dart_date.git
+  device_calendar: ^4.3.1
   equatable: ^2.0.5
   flutter:
     sdk: flutter
@@ -22,10 +23,12 @@ dependencies:
   flutter_expandable_fab: ^1.7.1
   flutter_localizations:
     sdk: flutter
+  flutter_slidable: ^3.0.0
   fpdart: ^0.5.0
   freezed: any
   freezed_annotation: any
   get_it: ^7.2.0
+  grouped_list: ^5.1.2
   hive: ^2.2.3
   intl: ^0.18.0
   isar: ^3.1.0+1
