@@ -156,7 +156,7 @@ class _TimelineViewState extends State<TimelineView> {
               color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
-          firstDay: DateTime(1990),
+          firstDay: DateTime.now().setHour(0).setMinute(0).setSecond(0),
           lastDay: DateTime(2050),
           availableCalendarFormats: const {
             CalendarFormat.month: 'Month',
