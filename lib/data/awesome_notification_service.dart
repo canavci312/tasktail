@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:task_app/domain/repositories/models/reminder.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
 
@@ -8,6 +11,10 @@ class AwesomeNotificationService {
     init();
     setListeners();
   }
+  static final notificationStreamController = StreamController<int>();
+  Stream<int> get taskCompletedStream => notificationStreamController.stream;
+
+  static Stream<Task> notificationActionStream = const Stream.empty();
   Future<bool> requestPermissions() async {
     if (await AwesomeNotifications().isNotificationAllowed()) {
       return true;
@@ -149,6 +156,7 @@ class AwesomeNotificationService {
             month: remindDate.month,
           );
       }
+
       AwesomeNotifications().createNotification(
         schedule: calendar,
         content: NotificationContent(
@@ -157,7 +165,7 @@ class AwesomeNotificationService {
           wakeUpScreen: true,
           badge: 1,
           title: 'Upcoming event: ${task.title}',
-          body: 'Simple body',
+          body: task.description != null ? '${task.description}' : null,
         ),
         actionButtons: [
           NotificationActionButton(key: 'dismiss', label: 'Dismiss'),
@@ -201,11 +209,7 @@ class NotificationController {
   static Future<void> onActionReceivedMethod(
     ReceivedAction receivedAction,
   ) async {
-    // Your code goes here
-
-    // Navigate into pages, avoiding to open the notification details page over another details page already opened
-    // MyApp.navigatorKey.currentState?.pushNamedAndRemoveUntil('/notification-page',
-    //         (route) => (route.settings.name != '/notification-page') || route.isFirst,
-    //     arguments: receivedAction);
+    if(receivedAction.buttonKeyPressed=='complete')
+   AwesomeNotificationService.notificationStreamController.sink.add(receivedAction.id!);
   }
 }

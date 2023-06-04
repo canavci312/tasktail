@@ -19,6 +19,7 @@ class TaskRepository {
   }) {
     listenForReminders();
     listenCalendar();
+    listenNotificationEvents();
   }
   final AwesomeNotificationService awesomeNotificationService;
   final Isar localProvider;
@@ -32,6 +33,13 @@ class TaskRepository {
       } else {
         unsubscribeCalendar();
       }
+    });
+  }
+
+  void listenNotificationEvents() {
+    awesomeNotificationService.taskCompletedStream.listen((event) async {
+      final task = await getTaskById(event);
+      await updateTask(task.copyWith(isCompleted: true));
     });
   }
 
@@ -207,6 +215,11 @@ class TaskRepository {
         return taskDto;
       },
     );
+  }
+
+  Future<Task> getTaskById(int id) async {
+    final task = await localProvider.collection<TaskDto>().get(id);
+    return task!.toDomainModel();
   }
 
   Future<bool> deleteTask(int id) async {
