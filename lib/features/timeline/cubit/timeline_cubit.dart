@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -22,8 +24,15 @@ class TimelineCubit extends Cubit<TimelineState> {
           ),
         );
   final TaskRepository _taskRepository;
+  StreamSubscription<List<Task>>? subs;
+  @override
+  Future<void> close() {
+    subs?.cancel();
+    return super.close();
+  }
+
   void listenTasks() {
-    _taskRepository.listenTasks().listen((event) {
+    subs = _taskRepository.listenTasks().listen((event) {
       emit(
         state.copyWith(
           tasks: event,
@@ -33,7 +42,7 @@ class TimelineCubit extends Cubit<TimelineState> {
       );
     });
   }
-
+  
   void toggleDone(Task task) {
     _taskRepository.updateTask(task.copyWith(isCompleted: !task.isCompleted));
   }

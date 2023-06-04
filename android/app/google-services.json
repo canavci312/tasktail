@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "448258805378",
+    "project_id": "tasktail-4bba9",
+    "storage_bucket": "tasktail-4bba9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448258805378:android:ef1d8f46e772ca079b2e9b",
+        "android_client_info": {
+          "package_name": "com.example.verygoodcore.task_app.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "448258805378-q7h9abeta1m85is27ou5i0411uqn3ejj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrLeUxw8DPYivXPimcZbs1tLkIbST0PAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448258805378-q7h9abeta1m85is27ou5i0411uqn3ejj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

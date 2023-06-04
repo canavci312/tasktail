@@ -27,7 +27,7 @@ class OverdueTasksView extends StatelessWidget {
             visible: state.isSelectionMode,
             child: Card(
               elevation: 5,
-              color: Theme.of(context).colorScheme.primaryContainer,
+              color: Theme.of(context).colorScheme.tertiaryContainer,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -35,7 +35,13 @@ class OverdueTasksView extends StatelessWidget {
                     onPressed: () {
                       cubit.selectAllTasks();
                     },
-                    child: const Text('Select all'),
+                    child: Text(
+                      'Select all',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).colorScheme.onTertiaryContainer,
+                      ),
+                    ),
                   ),
                   IconButton(
                     onPressed: () async {

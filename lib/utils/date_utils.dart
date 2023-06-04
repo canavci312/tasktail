@@ -8,4 +8,12 @@ class AppDateUtils {
       return date.setHour(9, 0, 0, 0);
     }
   }
+
+  static String formatHour(DateTime date) {
+    return date.format('hh:mm a');
+  }
+
+  static String formatDayTime(DateTime date) {
+    return date.format('dd MMMM hh:mm a');
+  }
 }

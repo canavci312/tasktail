@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:task_app/data/awesome_notification_service.dart';
 import 'package:task_app/data/repositories/task_repository.dart';
 import 'package:task_app/domain/repositories/models/checklist_item.dart';
 import 'package:task_app/domain/repositories/models/project.dart';
@@ -13,7 +14,7 @@ part 'add_edit_task_state.dart';
 part 'add_edit_task_cubit.freezed.dart';
 
 class AddEditTaskCubit extends Cubit<AddEditTaskState> {
-  AddEditTaskCubit(this.task, this._taskRepository)
+  AddEditTaskCubit(this.task, this._taskRepository, this._notificationService)
       : super(
           AddEditTaskState(
             checkListItems: task?.checklist ?? [],
@@ -27,6 +28,7 @@ class AddEditTaskCubit extends Cubit<AddEditTaskState> {
           ),
         );
   final TaskRepository _taskRepository;
+  final AwesomeNotificationService _notificationService;
   final Task? task;
   void priorityChanged(Priority value) {
     emit(state.copyWith(priority: value));
@@ -113,6 +115,35 @@ class AddEditTaskCubit extends Cubit<AddEditTaskState> {
           ],
         ),
       );
+    }
+  }
+
+  void reminderRemoved(Reminder reminder) {
+    final reminders = state.reminders;
+    emit(
+      state.copyWith(
+        reminders: reminders.where((element) => element != reminder).toList(),
+      ),
+    );
+  }
+
+  void deleteTask() {
+    _taskRepository.deleteTask(task!.id!);
+  }
+
+  void convertToNote() {
+    _taskRepository.updateTask(task!.copyWith(isNote: true));
+  }
+
+  void markAsDone() {
+    _taskRepository.updateTask(task!.copyWith(isCompleted: true));
+  }
+
+  void pinAsNotification() {
+    try {
+      _notificationService.pinTask(task!);
+    } catch (e) {
+      print(e);
     }
   }
 }

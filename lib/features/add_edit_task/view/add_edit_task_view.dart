@@ -13,6 +13,7 @@ import 'package:task_app/features/checklist/view/checklist_page.dart';
 import 'package:task_app/features/select_project/view/select_project_page.dart';
 import 'package:task_app/features/tags/select_tag/select_tag.dart';
 import 'package:task_app/features/timeline/view/timeline_view.dart';
+import 'package:task_app/features/widgets/task_more_sheet.dart';
 import 'package:task_app/locator.dart';
 import 'package:task_app/navigation/router.dart';
 import 'package:task_app/utils/extensions/string_extensions.dart';
@@ -98,7 +99,41 @@ class _AddEditTaskViewState extends State<AddEditTaskView> {
         label: const Text('Save'),
       ),
       appBar: AppBar(
-        title: Text(getTitle()),
+        title: Text(
+          getTitle(),
+        ),
+        actions: widget.task?.title == null
+            ? []
+            : [
+                IconButton(
+                  onPressed: () async {
+                    final result = await TaskMoreBottomSheet.show(
+                      context,
+                      isNote: widget.task!.isNote,
+                    );
+                    if (result != null) {
+                      switch (result) {
+                        case TaskMoreResult.delete:
+                          cubit.deleteTask();
+                          await context.popRoute();
+                          return;
+                        case TaskMoreResult.convertToNote:
+                          cubit.convertToNote();
+                          await context.popRoute();
+                          return;
+                        case TaskMoreResult.markAsDone:
+                          cubit.markAsDone();
+                          await context.popRoute();
+                          return;
+                        case TaskMoreResult.pinAsNotification:
+                          cubit.pinAsNotification();
+                          return;
+                      }
+                    }
+                  },
+                  icon: const Icon(Icons.more_horiz_outlined),
+                )
+              ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -266,8 +301,13 @@ class SetReminder extends StatelessWidget {
                   children: [
                     for (final reminder in state.reminders)
                       Chip(
+                        onDeleted: () {
+                          context
+                              .read<AddEditTaskCubit>()
+                              .reminderRemoved(reminder);
+                        },
                         label: Text(
-                          reminder.type.toString(),
+                          reminder.toString(),
                         ),
                       ),
                   ],
@@ -351,7 +391,16 @@ class SetReminder extends StatelessWidget {
                         );
                         if (result != null && context.mounted) {
                           Navigator.of(context).pop(
-                            Reminder(type: ReminderType.atSpecificTime),
+                            Reminder(
+                              type: ReminderType.atSpecificTime,
+                              date: DateTime(
+                                0,
+                                0,
+                                0,
+                                result.hour,
+                                result.minute,
+                              ),
+                            ),
                           );
                         }
                       },

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dart_date/dart_date.dart';
 import 'package:isar/isar.dart';
 import 'package:task_app/data/awesome_notification_service.dart';
@@ -5,6 +7,7 @@ import 'package:task_app/data/device_calendar.dart';
 import 'package:task_app/data/isar/models/project_dto.dart';
 import 'package:task_app/data/isar/models/tag_dto.dart';
 import 'package:task_app/data/isar/models/task_dto.dart';
+import 'package:task_app/data/repositories/settings_repository.dart';
 import 'package:task_app/domain/repositories/models/task.dart';
 
 class TaskRepository {
@@ -12,12 +15,26 @@ class TaskRepository {
     required this.awesomeNotificationService,
     required this.localProvider,
     required this.deviceCalendarService,
+    required this.settingsRepository,
   }) {
     listenForReminders();
+    listenCalendar();
   }
   final AwesomeNotificationService awesomeNotificationService;
   final Isar localProvider;
   final DeviceCalendarService deviceCalendarService;
+  final SettingsRepository settingsRepository;
+  Timer? calendarSubsTimer;
+  void listenCalendar() {
+    settingsRepository.isCalendarImportOpen.listen((value) {
+      if (value) {
+        subscribeCalendar();
+      } else {
+        unsubscribeCalendar();
+      }
+    });
+  }
+
   Stream<List<Task>> listenTasks() {
     return localProvider
         .collection<TaskDto>()
@@ -28,11 +45,49 @@ class TaskRepository {
         .map((event) => event.map((e) => e.toDomainModel()).toList());
   }
 
+  Stream<List<Task>> listenNotes() {
+    return localProvider
+        .collection<TaskDto>()
+        .filter()
+        .isNoteEqualTo(true)
+        .sortByDueDateDesc()
+        .build()
+        .watch(fireImmediately: true)
+        .map((event) => event.map((e) => e.toDomainModel()).toList());
+  }
+
+  void dispose() {
+    calendarSubsTimer?.cancel();
+  }
+
+  void unsubscribeCalendar() {
+    calendarSubsTimer?.cancel();
+  }
+
+  void subscribeCalendar() {
+    importTasksFromCalendar();
+    calendarSubsTimer = Timer.periodic(
+      const Duration(minutes: 5),
+      (Timer t) => importTasksFromCalendar(),
+    );
+  }
+
   Future<void> importTasksFromCalendar() async {
     final tasks = await deviceCalendarService.getCalendarEvents();
     if (tasks != null) {
       for (final task in tasks) {
-        await insertTask(task);
+        final search = localProvider
+            .collection<TaskDto>()
+            .filter()
+            .calendarIdEqualTo(task.calendarId)
+            .build()
+            .findFirstSync();
+        if (search != null) {
+          final domain = search.toDomainModel();
+          await updateTask(domain.copyWith(dueDate: task.dueDate));
+        } else {
+          await insertTask(task);
+        }
       }
     }
   }

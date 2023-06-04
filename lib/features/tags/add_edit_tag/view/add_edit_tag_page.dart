@@ -12,6 +12,15 @@ class AddEditTagPage extends StatelessWidget {
     super.key,
     this.tag,
   });
+  static Future<void> show(BuildContext context, {required Tag? tag}) {
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (context) => AddEditTagPage(
+        tag: tag,
+      ),
+    );
+  }
+
   final Tag? tag;
   @override
   Widget build(BuildContext context) {

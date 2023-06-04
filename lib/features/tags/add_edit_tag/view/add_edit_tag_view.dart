@@ -49,6 +49,7 @@ class AddEditTagView extends StatelessWidget {
                         child: Form(
                           key: _formKey,
                           child: TextFormField(
+                            initialValue: state.name,
                             validator: (value) {
                               return value != null && value.isNotEmpty
                                   ? null

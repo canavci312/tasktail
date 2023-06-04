@@ -32,13 +32,19 @@ class Task with _$Task {
 extension TaskExtension on Task {
   bool get isOverdue =>
       dueDate != null &&
-      dueDate!.isBefore(DateTime.now().setHour(23).setMinute(59).setSecond(59));
+      dueDate!.isBefore(
+        DateTime.now().subDays(1).setHour(23).setMinute(59).setSecond(59),
+      );
   bool get isUnplanned => project == null && dueDate == null;
 }
 
 extension TaskListExtensions on List<Task> {
-  List<Task> get todaysTasks =>
-      where((element) => element.dueDate?.isToday ?? false).toList();
+  int get todaysTodoTasks => where(
+        (element) =>
+            element.dueDate != null &&
+            element.dueDate!.isToday &&
+            !element.isCompleted,
+      ).length;
   List<Task> get overdueTasks => where((element) => element.isOverdue).toList();
   List<Task> get unplannedTasks =>
       where((element) => element.isUnplanned).toList();

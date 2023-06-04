@@ -285,7 +285,7 @@ class TimelineDayTile extends StatelessWidget {
                           Text(
                             tasks == null
                                 ? '0'
-                                : tasks!.todaysTasks.length.toString(),
+                                : tasks!.todaysTodoTasks.toString(),
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                           Text(

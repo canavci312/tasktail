@@ -1,8 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_app/app/blocs/cubit/theme_cubit.dart';
 
 import 'package:task_app/features/workspace/workspace.dart';
+import 'package:task_app/navigation/router.dart';
 
 class WorkspaceView extends StatelessWidget {
   const WorkspaceView({
@@ -14,7 +17,7 @@ class WorkspaceView extends StatelessWidget {
     final cubit = context.read<WorkspaceCubit>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workspace'),
+        title: const Text('More'),
       ),
       body: BlocBuilder<WorkspaceCubit, WorkspaceState>(
         builder: (context, state) {
@@ -35,7 +38,7 @@ class WorkspaceView extends StatelessWidget {
                       value: state.isCalendarImportOpen,
                       onChanged: (value) async {
                         if (value) {
-                          cubit.toggleCalendarImport(value,null);
+                          cubit.toggleCalendarImport(value, null);
                         } else {
                           final result = await showDialog<bool?>(
                             context: context,
@@ -60,9 +63,8 @@ class WorkspaceView extends StatelessWidget {
                           );
                           if (result == null) {
                             return;
-                          }
-                          else{
-                            cubit.toggleCalendarImport(false,result);
+                          } else {
+                            cubit.toggleCalendarImport(false, result);
                           }
                         }
                       },
@@ -91,26 +93,83 @@ class WorkspaceView extends StatelessWidget {
                   ],
                 ),
               ),
-              const ListTile(
-                leading: Icon(Icons.note_outlined),
-                title: Text('Notes'),
+              ListTile(
+                leading: const Icon(Icons.note_outlined),
+                title: const Text('Notes'),
+                onTap: () => context.router.push(const NoteListRoute()),
               ),
-              const ListTile(
-                leading: Icon(Icons.local_offer_outlined),
-                title: Text('Tags'),
+              ListTile(
+                leading: const Icon(Icons.local_offer_outlined),
+                title: const Text('Tags'),
+                onTap: () => context.router.push(const TagListRoute()),
               ),
-              const AboutListTile(
-                icon: Icon(Icons.info_outline),
-                applicationName: 'Tasktail',
-                applicationVersion: '1.0.0',
-                applicationLegalese: '© 2023',
-                aboutBoxChildren: [
-                  SizedBox(height: 24),
-                  Text(
-                    'Tasktail is a simple and modern task management app that allows you to create and manage tasks.',
-                  ),
-                ],
-              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Theme',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: const Text('Light'),
+                            leading: Radio(
+                              value: ThemeMode.light,
+                              groupValue: context.read<ThemeCubit>().state,
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context
+                                      .read<ThemeCubit>()
+                                      .changeThemeMode(value);
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: ListTile(
+                            title: const Text('Dark'),
+                            contentPadding: EdgeInsets.zero,
+                            leading: Radio(
+                              value: ThemeMode.dark,
+                              groupValue: context.read<ThemeCubit>().state,
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context
+                                      .read<ThemeCubit>()
+                                      .changeThemeMode(value);
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: ListTile(
+                            title: const Text('System'),
+                            contentPadding: EdgeInsets.zero,
+                            leading: Radio(
+                              value: ThemeMode.system,
+                              groupValue: context.read<ThemeCubit>().state,
+                              onChanged: (value) {
+                                if (value != null) {
+                                  context
+                                      .read<ThemeCubit>()
+                                      .changeThemeMode(value);
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              )
             ],
           );
         },

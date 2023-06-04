@@ -39,6 +39,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const UnplannedPage(),
       );
     },
+    TagListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const TagListPage(),
+      );
+    },
     ProjectSettingsRoute.name: (routeData) {
       final args = routeData.argsAs<ProjectSettingsRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -70,6 +76,12 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const OverdueTasksPage(),
+      );
+    },
+    NoteListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const NoteListPage(),
       );
     },
   };
@@ -127,6 +139,20 @@ class UnplannedRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'UnplannedRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [TagListPage]
+class TagListRoute extends PageRouteInfo<void> {
+  const TagListRoute({List<PageRouteInfo>? children})
+      : super(
+          TagListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'TagListRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -231,6 +257,20 @@ class OverdueTasksRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'OverdueTasksRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [NoteListPage]
+class NoteListRoute extends PageRouteInfo<void> {
+  const NoteListRoute({List<PageRouteInfo>? children})
+      : super(
+          NoteListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'NoteListRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

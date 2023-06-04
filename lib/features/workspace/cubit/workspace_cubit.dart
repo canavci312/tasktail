@@ -10,11 +10,12 @@ class WorkspaceCubit extends Cubit<WorkspaceState> {
   WorkspaceCubit(this._taskRepository, this._settingsRepository)
       : super(const WorkspaceState(isCalendarImportOpen: false));
   final TaskRepository _taskRepository;
+
   final SettingsRepository _settingsRepository;
   void loadSettings() {
     emit(
       state.copyWith(
-        isCalendarImportOpen: _settingsRepository.isCalendarImportOpen,
+        isCalendarImportOpen: _settingsRepository.isCalendarImportOpen.value,
       ),
     );
   }
@@ -31,4 +32,5 @@ class WorkspaceCubit extends Cubit<WorkspaceState> {
     _settingsRepository.setCalenderImport(value: value);
     emit(state.copyWith(isCalendarImportOpen: value));
   }
+
 }

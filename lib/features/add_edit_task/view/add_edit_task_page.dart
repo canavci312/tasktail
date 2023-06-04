@@ -17,7 +17,7 @@ class AddEditTaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AddEditTaskCubit(task, getIt()),
+      create: (context) => AddEditTaskCubit(task, getIt(),getIt()),
       child: AddEditTaskView(
         task: task,
       ),

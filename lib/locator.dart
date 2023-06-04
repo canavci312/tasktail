@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_app/data/awesome_notification_service.dart';
 import 'package:task_app/data/device_calendar.dart';
 import 'package:task_app/data/isar/models/project_dto.dart';
@@ -21,9 +22,10 @@ Future<void> setup() async {
     [TaskDtoSchema, ProjectDtoSchema, TagDtoSchema],
     directory: dir.path,
   );
+  final sharedPref = await SharedPreferences.getInstance();
   getIt
     ..registerSingleton<SettingsRepository>(
-      SettingsRepository(),
+      SettingsRepository(sharedPref),
     )
     ..registerSingleton<AwesomeNotificationService>(
       AwesomeNotificationService(),
@@ -36,6 +38,7 @@ Future<void> setup() async {
         localProvider: isar,
         awesomeNotificationService: getIt(),
         deviceCalendarService: getIt(),
+        settingsRepository: getIt(),
       ),
     )
     ..registerSingleton<TagRepository>(

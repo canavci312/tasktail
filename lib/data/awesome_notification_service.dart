@@ -15,16 +15,40 @@ class AwesomeNotificationService {
     return AwesomeNotifications().requestPermissionToSendNotifications();
   }
 
+  Future<void> pinTask(Task task) async {
+    if (await requestPermissions()) {
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: task.id!,
+          channelKey: 'reminder_channel',
+          title: '${task.title}',
+          body: '${task.description}',
+          badge: 0,
+          locked: true,
+        ),
+        actionButtons: [
+          NotificationActionButton(key: 'dismiss', label: 'Dismiss'),
+          NotificationActionButton(
+            key: 'complete',
+            label: 'Mark as complete',
+          )
+        ],
+      );
+    } else {
+      throw Exception('Permission not granted');
+    }
+  }
+
   Future<void> init() async {
     await AwesomeNotifications().initialize(
       // set the icon to null if you want to use the default app icon
       null,
       [
         NotificationChannel(
-          channelGroupKey: 'basic_channel_group',
+          channelGroupKey: 'reminder_channel_group',
           channelKey: 'reminder_channel',
           channelName: 'Basic notifications',
-          channelDescription: 'Notification channel for basic tests',
+          channelDescription: 'Notification channel task reminder',
           defaultColor: const Color(0xFF9D50DD),
           ledColor: Colors.white,
         )
@@ -32,8 +56,8 @@ class AwesomeNotificationService {
       // Channel groups are only visual and are not required
       channelGroups: [
         NotificationChannelGroup(
-          channelGroupKey: 'basic_channel_group',
-          channelGroupName: 'Basic group',
+          channelGroupKey: 'reminder_channel_group',
+          channelGroupName: 'Task Alerts',
         )
       ],
       debug: true,
@@ -52,19 +76,18 @@ class AwesomeNotificationService {
     );
   }
 
-  void permission() {
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        // This is just a basic example. For real apps, you must show some
-        // friendly dialog box before call the request method.
-        // This is very important to not harm the user experience
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
+  Future<bool> hasPermission() async {
+    final result = await AwesomeNotifications().isNotificationAllowed();
+    if (result) {
+      return true;
+    } else {
+      return await AwesomeNotifications()
+          .requestPermissionToSendNotifications();
+    }
   }
 
   void cancelAll() {
-    AwesomeNotifications().cancelAll();
+    AwesomeNotifications().cancelAllSchedules();
   }
 
   void createReminder(Task task) {

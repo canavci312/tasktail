@@ -159,7 +159,6 @@ class _ProjectSettingsViewState extends State<ProjectSettingsView> {
                   title:
                       const Text('Delete', style: TextStyle(color: Colors.red)),
                   onTap: () async {
-                    //TODO delete nasıl çalışıyor bakman lazım
                     final result = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(

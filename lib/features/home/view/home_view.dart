@@ -34,8 +34,8 @@ class HomeView extends StatelessWidget {
               label: 'Unplanned',
             ),
             NavigationDestination(
-              icon: Icon(Icons.workspaces_outline),
-              label: 'Workspace',
+              icon: Icon(Icons.more_horiz_outlined),
+              label: 'More',
             ),
           ],
         );
